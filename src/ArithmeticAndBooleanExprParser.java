@@ -269,7 +269,8 @@ public class ArithmeticAndBooleanExprParser {
                 "mod(7,3)",             // Expected output: 7 % 3
                 "add(1)",               // Invalid input, test to see handling
                 "randomOperation(5,2)", // Unsupported operation, test to see handling
-                "add(3,var)"            // Expected output: 3 + (2 * 3)
+                "add(3,var)",            // Expected output: 3 + (2 * 3)
+                "add(add(3,4),6)"
         };
 
         for (String expr : testExpressions) {
