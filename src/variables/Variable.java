@@ -1,3 +1,4 @@
+package variables;
 
 public abstract class Variable<T>
 {

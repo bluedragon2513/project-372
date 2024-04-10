@@ -1,3 +1,4 @@
+package variables;
 
 public class BooleanVar extends Variable<Boolean>
 {

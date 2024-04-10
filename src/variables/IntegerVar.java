@@ -1,3 +1,4 @@
+package variables;
 
 public class IntegerVar extends Variable<Integer>
 {

@@ -1,3 +1,4 @@
+package variables;
 
 public class StringVar extends Variable<String>
 {
