@@ -10,6 +10,10 @@ public class FunctionVar extends Variable<Body> {
 		super(name, value);
 		// TODO Auto-generated constructor stub
 	}
+	
+	public Body arguments(ArrayList<String> arguments) {
+		return null;
+	}
 
 	@Override
 	public boolean isComparable() {

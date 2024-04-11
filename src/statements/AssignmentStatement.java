@@ -8,7 +8,7 @@ public class AssignmentStatement implements ExecutableStatement {
 	
 	public AssignmentStatement(String variable, String value) {
 		CallStatement c = new CallStatement(value);
-		statement = (namespace) -> {namespace.get(variable).setValue(c.run(namespace));};
+		statement = (namespace) -> {namespace.put(variable, c.run(namespace));};
 	}
 	
 	@Override
