@@ -2,7 +2,7 @@ package variables;
 
 import java.util.ArrayList;
 
-import statements.Body;
+import control_structure.Body;
 
 public class FunctionVar extends Variable<Body> {
 
