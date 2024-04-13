@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -10,34 +11,41 @@ import variables.IntegerVar;
 import variables.Variable;
 
 import statements.*;
+import tokenization.Token;
+import tokenization.Tokenizer;
 
 public class Translator
 {
+	private Tokenizer tokenizer;
+    private Parser parser;
+    private String sourceCode;
+    
+	public Translator(String sourceCode) {
+		this.sourceCode = sourceCode;
+		this.tokenizer = new Tokenizer(sourceCode);
+	}
+	
 	public static void main(String[] args)
 	{
-		System.out.println("hello world");
+//		System.out.println("hello world");
 //		readInput();
 		
 		Map<String, Variable> dict = new HashMap<String, Variable>();
-		
-		try {
-			directStatementExecution(dict);
-			testArithmeticExprParser(dict);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
 		// test = 5
 		// somehow identify the type of 5:
 		Pattern intPattern = Pattern.compile("[0-9]+"); // ???
 		
 		// Create a new integer variable and add it to the dictionary
-		dict.put("test", new IntegerVar("test", 5));
+//		dict.put("test", new IntegerVar("test", 5));
 		
-		System.out.println(dict.get("test").getValue());
-		System.out.println(dict.get("test").isComparable());
-		System.out.println(dict.get("test").isArithmetic());
+//		System.out.println(dict.get("test").getValue());
+//		System.out.println(dict.get("test").isComparable());
+//		System.out.println(dict.get("test").isArithmetic());
+		
+		String sourceCode = "result = add(mult(2,3), mult(2,3))! test = add(result,1)!"; // Example source code
+        Translator translator = new Translator(sourceCode);
+        translator.translate();
 	}
 
 	private static void readInput()
@@ -52,7 +60,7 @@ public class Translator
 			while (br.ready())
 			{
 				curr = br.readLine();
-				checkValidExpr(curr);
+//				checkValidExpr(curr);
 			}
 		}
 		
@@ -68,38 +76,34 @@ public class Translator
 
 	}
 	
-	private static void directStatementExecution(Map<String, Variable> dict) throws Exception {
-		System.out.println("Directly Executing Statements:");
-		
-        IntegerStatement operand1 = new IntegerStatement(3);
-        IntegerStatement operand2 = new IntegerStatement(5);
+	 public void translate() {
+	        try {
+	            // Tokenize the input source code
+	            List<Token> tokens = tokenizer.tokenize();
+	            System.out.println("Tokens:");
+	            for (Token token : tokens) {
+	                System.out.println(token.getType() + " " + token.getValue());
+	            }
 
-        AddStatement addStatement = new AddStatement(operand1, operand2);
-        Integer result = addStatement.run(dict);
-        System.out.println("Result of 'add(3,5)' is: " + result);
-    }
-	
-	private static void testArithmeticExprParser(Map<String, Variable> dict) throws Exception {
-		System.out.println("\nTesting ArithmeticAndLogicalExprParser:");
-		
-        String[] testExpressions = {
-                "add(multiply(3,2),3)",
-                "add(3,2)",
-                "subtract(10,5)",
-                "multiply(4,6)",
-                "divide(10,2)",
-                "mod(10,3)",
-                "test(10,3)",
-        };
+	            // Parse the tokens into executable statements
+	            parser = new Parser(tokens);
+	            List<ExecutableStatement> program = parser.parseProgram();
+	            System.out.println("Parsed Statements:");
+	            for (ExecutableStatement statement : program) {
+	                System.out.println(statement.getClass().getSimpleName());
+	            }
 
-        for (String expr : testExpressions) {
-            try {
-                System.out.println("Expression: " + expr);
-                Integer result = ArithmeticExprParser.parseAndEvaluate(expr, dict);
-                System.out.println("Result: " + result + "\n");
-            } catch (IllegalArgumentException e) {
-                System.out.println("Failed to parse: " + expr + ". Error: " + e.getMessage());
-            }
-        }
-    }
+	            // Execute parsed statements and print results
+	            Map<String, Variable> namespace = new HashMap<>();
+	            System.out.println("Execution Outputs:");
+	            for (ExecutableStatement statement : program) {
+	                Object result = statement.run(namespace);
+	                System.out.println(result); // Print the result of each statement execution
+	            }
+
+	        } catch (Exception e) {
+	            System.err.println("Error during translation: " + e.getMessage());
+	            e.printStackTrace(); // Provide more detailed error information
+	        }
+	    }
 }

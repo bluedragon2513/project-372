@@ -4,6 +4,6 @@ import java.util.Map;
 
 import variables.Variable;
 
-public interface ExecutableStatement<T> {
-    T run(Map<String, Variable> namespace) throws Exception;
+public interface ExecutableStatement {
+    Object run(Map<String, Variable> namespace) throws Exception;
 }
