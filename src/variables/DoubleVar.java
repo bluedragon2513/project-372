@@ -1,3 +1,4 @@
+package variables;
 
 public class DoubleVar extends Variable<Double>
 {
