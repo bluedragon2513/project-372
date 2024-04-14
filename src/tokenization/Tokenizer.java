@@ -11,8 +11,9 @@ public class Tokenizer {
     private String input;
     private int position = 0;
     private char currentChar;
-    private static final Set<String> operations = Set.of("add", "sub", "mult", "div");
-    private static final Set<String> controllers = Set.of("loop", "done", "return", "if"); // TODO 
+    private static final Set<String> operations = Set.of("add", "sub", "mult", "div", "equalTo");
+    private static final Set<String> controllers = Set.of("loop", "done", "return", "if", "then", "else"); // TODO
+    private static final Set<String> booleans = Set.of("true", "false");
 
     // Constructor
     public Tokenizer(String input) {
@@ -85,7 +86,11 @@ public class Tokenizer {
         		return new Token(TokenType.IF, resultString);
         	} else if (resultString.equals("then")) {
         		return new Token(TokenType.THEN, resultString);
+        	} else if (resultString.equals("else")) {
+        		return new Token(TokenType.ELSE, resultString);
         	}
+        } else if (booleans.contains(resultString)) {
+        	return new Token(TokenType.BOOLEAN, resultString);
         } else {
             return new Token(TokenType.VARIABLE, resultString);
         }

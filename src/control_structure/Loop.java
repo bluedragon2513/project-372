@@ -4,11 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import statements.AssignmentStatement;
 import statements.ExecutableStatement;
 import variables.Variable;
 
 public class Loop implements ExecutableStatement {
 	HashMap<String, Variable> localNamespace;
+	String startVar;
 	ExecutableStatement start;
 	ExecutableStatement opt = (namespace) -> { return null; }; // optional
 	Body body;
@@ -19,20 +21,35 @@ public class Loop implements ExecutableStatement {
 		this.end = end;
 		this.body = new Body(body);
 	}
+	
+	public Loop(String startVar, ExecutableStatement start, ExecutableStatement increment, ExecutableStatement end, List<ExecutableStatement> body) {
+		this.startVar = startVar;
+		this.start = start;
+		this.opt = new AssignmentStatement(startVar, increment);
+		this.end = end;
+		this.body = new Body(body);
+	}
     
     public Object run(Map<String, Variable> parentNamespace) throws Exception {
     	this.localNamespace = new HashMap<String, Variable>(parentNamespace);
     	
     	// TODO this incrementer is not correct!
-    	double i = (double) start.run(localNamespace);
-    	double j = (double) end.run(new HashMap<String, Variable>());
-    	double increment = i < j ? 1 : i > j ? -1 : 0;
-    	for (; i != j; i += increment) {
-    		body.run(localNamespace);
+    	Object lastVal = null;
+    	
+//    	int i = 0;
+    	
+    	start.run(localNamespace); // create variable
+    	while (!(boolean) end.run(localNamespace)) {
+    		body.run(localNamespace); // run body
+    		lastVal = opt.run(localNamespace); // increment
+//    		System.out.print(localNamespace.get(startVar).getValue() + " " + !(boolean) end.run(localNamespace));
+    		
+//    		i++;
+//    		if (i > 15) break;
     	}
     	
 //    	opt.run(localNamespace);
     	
-    	return i;
+    	return lastVal;
     }
 }

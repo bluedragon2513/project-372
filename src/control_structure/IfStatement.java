@@ -1,30 +1,34 @@
 package control_structure;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import statements.ExecutableStatement;
-import statements.CallStatement;
 import variables.Variable;
 
-public class IfStatement {
+public class IfStatement implements ExecutableStatement {
 	HashMap<String, Variable> localNamespace;
-	ExecutableStatement ifStatement;
+	ExecutableStatement conditional;
+	ExecutableStatement ifTrue;
+	ExecutableStatement ifFalse = (namespace) -> { return null; };
 	
-	public IfStatement(String condition, String then, String otherwise) {
-		this.ifStatement = (namespace) -> {
-			CallStatement conditional = new CallStatement(condition);
-			CallStatement thenHere = new CallStatement(then);
-			CallStatement other = new CallStatement(otherwise);
-			
-			if (conditional.run(namespace)) {
-				thenHere.run(namespace);
-			} else {
-				other.run(namespace);
-			}
-		};
+	public IfStatement(ExecutableStatement conditional, ExecutableStatement ifTrue) {
+		this.conditional = conditional;
+		this.ifTrue = ifTrue;
 	}
 	
-	public void run(HashMap<String, Variable> parentNamespace) {
-		ifStatement.run(parentNamespace);
+	public IfStatement(ExecutableStatement conditional, ExecutableStatement ifTrue, ExecutableStatement ifFalse) {
+		this(conditional, ifTrue);
+		this.ifFalse = ifFalse;
+	}
+	
+	public Object run(Map<String, Variable> parentNamespace) throws Exception {
+		if ((boolean) conditional.run(parentNamespace)) {
+			ifTrue.run(parentNamespace);
+		} else {
+			ifFalse.run(parentNamespace);
+		}
+		
+		return null;
 	}
 }

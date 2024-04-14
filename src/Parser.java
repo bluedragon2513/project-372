@@ -1,16 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
 
-import control_structure.Loop;
-import statements.AddStatement;
-import statements.AssignmentStatement;
-import statements.DivStatement;
-import statements.ExecutableStatement;
-import statements.ModStatement;
-import statements.MulStatement;
-import statements.SubStatement;
-import statements.ValueStatement;
-import statements.VariableStatement;
+import control_structure.*;
+import statements.*;
 import tokenization.Token;
 import tokenization.TokenType;
 
@@ -119,6 +111,8 @@ public class Parser {
             return parseAssignment();
         } else if (peek().type == TokenType.LOOP) {
         	return parseLoop();
+        } else if (peek().type == TokenType.IF) {
+        	return parseIf();
         } else {
             return parseExpression();
         }
@@ -161,6 +155,9 @@ public class Parser {
         // Check if the current token is a number
         if (check(TokenType.NUMBER)) {
             return new ValueStatement(Double.parseDouble(advance().value));
+        // Check if the current token is a boolean
+        } else if (check(TokenType.BOOLEAN)) {
+        	return new ValueStatement(advance().value.equals("true") ? true : false);
         // Check if the current token is a variable
         } else if (check(TokenType.VARIABLE)) {
             return new VariableStatement(advance().value);
@@ -206,6 +203,8 @@ public class Parser {
                 return new DivStatement(statements.get(0), statements.get(1));
             case "mod":
             	return new ModStatement(statements.get(0), statements.get(1));
+            case "equalTo":
+            	return new EqualStatement(statements.get(0), statements.get(1));
             default:
                 throw new RuntimeException("Unknown operation: " + operation);
         }
@@ -213,29 +212,58 @@ public class Parser {
     
     /**
      * Parses a loop and returns an executable Java statement
-     * 		loop <x=0>
+     * 		loop <x=0> <add(x,2)>
      * 			* result = add(x,1)!
-     * 		done <x=5>!
+     * 		done <equalTo(x,6)>!
      * 
      * @return an executable statement
      * @throws Exception
      */
     private ExecutableStatement parseLoop() throws Exception {
     	consume(TokenType.LOOP, "Expected 'loop' keyword");
-    	consume(TokenType.LANGLE, "Expected '<' after loop keyword.");
+    	consume(TokenType.LANGLE, "Expected '<' after 'loop' keyword.");
     	
     	List<ExecutableStatement> statements = new ArrayList<>();
+    	String startVar = peek().value;
     	ExecutableStatement start = parseAssignment();
     	consume(TokenType.RANGLE, "Expected '>' after loop initializer.");
+    	
+    	consume(TokenType.LANGLE, "Expected '<' after loop initializer.");
+    	ExecutableStatement increment = parseOperation();
+    	if (!(increment instanceof AddStatement) && !(increment instanceof SubStatement)) {
+    		throw new Exception("Expected incremental operation.");
+    	}
+    	consume(TokenType.RANGLE, "Expected '>' after loop incrementer.");
+    	
     	while (peek().type == TokenType.INBODY) { 
     		consume(TokenType.INBODY, "Expected '*' to separate statements");
     		statements.add(parseStatement());
     	}
     	consume(TokenType.DONE, "Expected 'done' keyword after loop body.");
     	consume(TokenType.LANGLE, "Expected '<' after done keyword.");
-    	ExecutableStatement end = parseAssignment();
+    	ExecutableStatement end = parseOperation();
     	consume(TokenType.RANGLE, "Expected '>' after done closer.");
     	
-    	return new Loop(start, end, statements);
+    	return new Loop(startVar, start, increment, end, statements);
+    }
+    
+    private ExecutableStatement parseIf() throws Exception {
+    	consume(TokenType.IF, "Expected 'if' keyword.");
+    	
+    	consume(TokenType.LANGLE, "Expected '<' after 'if' keyword.");
+    	ExecutableStatement conditional = parseOperation();
+    	if (!(conditional instanceof EqualStatement)) {
+    		throw new Exception("Expected conditional operation.");
+    	}
+    	consume(TokenType.RANGLE, "Expected '>' after conditional operation.");
+    	
+    	consume(TokenType.THEN, "Expected 'then' keyword after conditional operation.");
+    	ExecutableStatement ifTrue = parseStatement();
+
+    	consume(TokenType.ELSE, "Expected 'else' keyword after true statement.");    	
+    	ExecutableStatement ifFalse = parseStatement();
+    	consume(TokenType.DONE, "Expected 'done' keyword for 'if' closer.");
+    	
+    	return new IfStatement(conditional, ifTrue, ifFalse);
     }
 }
