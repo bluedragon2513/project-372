@@ -5,5 +5,6 @@ package tokenization;
  */
 public enum TokenType {
     NUMBER, VARIABLE, ASSIGN,
-    LPAREN, RPAREN, COMMA, OPERATION, END, EOF
+    LPAREN, RPAREN, COMMA, OPERATION, END, EOF,
+    LANGLE, RANGLE, INBODY, LOOP, DONE, IF, THEN // control structures
 }

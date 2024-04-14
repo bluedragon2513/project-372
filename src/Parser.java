@@ -1,8 +1,18 @@
-import statements.*;
-import tokenization.Token;
-import tokenization.TokenType;
 import java.util.ArrayList;
 import java.util.List;
+
+import control_structure.Loop;
+import statements.AddStatement;
+import statements.AssignmentStatement;
+import statements.DivStatement;
+import statements.ExecutableStatement;
+import statements.ModStatement;
+import statements.MulStatement;
+import statements.SubStatement;
+import statements.ValueStatement;
+import statements.VariableStatement;
+import tokenization.Token;
+import tokenization.TokenType;
 
 /**
  * This class is responsible for parsing the tokens into executable statements.
@@ -107,6 +117,8 @@ public class Parser {
         // Check if the statement is an assignment or an expression
         if (peek().type == TokenType.VARIABLE && lookAhead(1).type == TokenType.ASSIGN) {
             return parseAssignment();
+        } else if (peek().type == TokenType.LOOP) {
+        	return parseLoop();
         } else {
             return parseExpression();
         }
@@ -192,8 +204,38 @@ public class Parser {
                 return new MulStatement(statements.get(0), statements.get(1));
             case "div":
                 return new DivStatement(statements.get(0), statements.get(1));
+            case "mod":
+            	return new ModStatement(statements.get(0), statements.get(1));
             default:
                 throw new RuntimeException("Unknown operation: " + operation);
         }
+    }
+    
+    /**
+     * Parses a loop and returns an executable Java statement
+     * 		loop <x=0>
+     * 			* result = add(x,1)!
+     * 		done <x=5>!
+     * 
+     * @return an executable statement
+     * @throws Exception
+     */
+    private ExecutableStatement parseLoop() throws Exception {
+    	consume(TokenType.LOOP, "Expected 'loop' keyword");
+    	consume(TokenType.LANGLE, "Expected '<' after loop keyword.");
+    	
+    	List<ExecutableStatement> statements = new ArrayList<>();
+    	ExecutableStatement start = parseAssignment();
+    	consume(TokenType.RANGLE, "Expected '>' after loop initializer.");
+    	while (peek().type == TokenType.INBODY) { 
+    		consume(TokenType.INBODY, "Expected '*' to separate statements");
+    		statements.add(parseStatement());
+    	}
+    	consume(TokenType.DONE, "Expected 'done' keyword after loop body.");
+    	consume(TokenType.LANGLE, "Expected '<' after done keyword.");
+    	ExecutableStatement end = parseAssignment();
+    	consume(TokenType.RANGLE, "Expected '>' after done closer.");
+    	
+    	return new Loop(start, end, statements);
     }
 }

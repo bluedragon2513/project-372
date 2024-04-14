@@ -1,31 +1,28 @@
 package control_structure;
-import java.util.ArrayList;
+
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import variables.Variable;
+import java.util.List;
+import java.util.Map;
+
 import statements.ExecutableStatement;
+import variables.Variable;
 
-public class Body {
-	String any = "(?<any>[^*]+)";
-	String space = "\s*";
-	String loopBody = "(?<body>(\\*" + any + ")+?)" + space;
+public class Body implements ExecutableStatement {
+	List<ExecutableStatement> statements;
+	HashMap<String, Variable> localNamespace;
 	
-    ArrayList<ExecutableStatement> expressions;
-    HashMap<String, Variable> localNamespace;
+	public Body(List<ExecutableStatement> statements) {
+		this.statements = statements;
+	}
 
-    public Body(String unparsed) {
-    	Pattern p = Pattern.compile("\\*" + space + any + space);
-    	Matcher m = p.matcher(unparsed);
-    	while (m.find())
-    		System.out.println(m.group(1));
-    }
-    
-    public void run(HashMap<String, Variable> parentNamespace) {
-    	this.localNamespace = new HashMap<String, Variable>(parentNamespace);
-    	
-    	for (ExecutableStatement ex : expressions) {
-    		ex.run(localNamespace);
-    	}
-    }
+	@Override
+	public Object run(Map<String, Variable> parentNamespace) throws Exception {
+		this.localNamespace = new HashMap<String, Variable>(parentNamespace);
+
+		for (ExecutableStatement s : statements) {
+			s.run(localNamespace);
+		}
+		
+		return null;
+	}
 }

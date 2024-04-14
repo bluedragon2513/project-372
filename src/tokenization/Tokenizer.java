@@ -12,6 +12,7 @@ public class Tokenizer {
     private int position = 0;
     private char currentChar;
     private static final Set<String> operations = Set.of("add", "sub", "mult", "div");
+    private static final Set<String> controllers = Set.of("loop", "done", "return", "if"); // TODO 
 
     // Constructor
     public Tokenizer(String input) {
@@ -75,9 +76,21 @@ public class Tokenizer {
         String resultString = result.toString();
         if (operations.contains(resultString)) {
             return new Token(TokenType.OPERATION, resultString);
+        } else if (controllers.contains(resultString)) { // control structures TODO
+        	if (resultString.equals("loop")) {
+        		return new Token(TokenType.LOOP, resultString);
+        	} else if (resultString.equals("done")) {
+        		return new Token(TokenType.DONE, resultString);
+        	} else if (resultString.equals("if")) {
+        		return new Token(TokenType.IF, resultString);
+        	} else if (resultString.equals("then")) {
+        		return new Token(TokenType.THEN, resultString);
+        	}
         } else {
             return new Token(TokenType.VARIABLE, resultString);
         }
+        
+        return null;
     }
 
     /**
@@ -109,6 +122,15 @@ public class Tokenizer {
                 advance();
             } else if (currentChar == '!') {
                 tokens.add(new Token(TokenType.END, "!"));
+                advance();
+            } else if (currentChar == '<') { // CONTROL STRUCTURES //TODO
+                tokens.add(new Token(TokenType.LANGLE, "<"));
+                advance();
+            } else if (currentChar == '>') {
+                tokens.add(new Token(TokenType.RANGLE, ">"));
+                advance();
+            } else if (currentChar == '*') {
+                tokens.add(new Token(TokenType.INBODY, "*"));
                 advance();
             } else {
                 throw new RuntimeException("Unexpected character: " + currentChar);

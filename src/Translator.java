@@ -7,12 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import variables.IntegerVar;
-import variables.Variable;
-
-import statements.*;
+import statements.ExecutableStatement;
 import tokenization.Token;
 import tokenization.Tokenizer;
+import variables.Variable;
 
 public class Translator
 {
@@ -44,6 +42,7 @@ public class Translator
 //		System.out.println(dict.get("test").isArithmetic());
 		
 		String sourceCode = "result = add(mult(2,3), mult(2,3))! test = add(result,1)!"; // Example source code
+		sourceCode = "test = 1! loop <x=5> * test = add(test,1) done <x=9>!";
         Translator translator = new Translator(sourceCode);
         translator.translate();
 	}
