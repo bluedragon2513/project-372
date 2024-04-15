@@ -23,12 +23,14 @@ public class IfStatement implements ExecutableStatement {
 	}
 	
 	public Object run(Map<String, Variable> parentNamespace) throws Exception {
+		Object retVal;
+		
 		if ((boolean) conditional.run(parentNamespace)) {
-			ifTrue.run(parentNamespace);
+			retVal = ifTrue.run(parentNamespace);
 		} else {
-			ifFalse.run(parentNamespace);
+			retVal = ifFalse.run(parentNamespace);
 		}
 		
-		return null;
+		return retVal;
 	}
 }

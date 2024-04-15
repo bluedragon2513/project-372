@@ -19,10 +19,16 @@ public class Body implements ExecutableStatement {
 	public Object run(Map<String, Variable> parentNamespace) throws Exception {
 		this.localNamespace = new HashMap<String, Variable>(parentNamespace);
 
+		Object last = null;
+		
 		for (ExecutableStatement s : statements) {
-			s.run(localNamespace);
+			Object ret = s.run(localNamespace);
+			if (ret instanceof ReturnValue) {
+				return ret;
+			}
+			last = ret;
 		}
 		
-		return null;
+		return new ReturnValue(last);
 	}
 }

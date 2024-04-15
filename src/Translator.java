@@ -43,6 +43,14 @@ public class Translator {
 		sourceCode = "x = equalTo(9,9)!";
 		sourceCode = "test = 1! loop <x=5> <add(x,1)> * test = add(test,1) done <equalTo(x,9)>!";
 		sourceCode = "x=5! if <equalTo(x,5)> then y=true else y=false done! y!";
+		sourceCode = "loop <x=5> <add(x,1)> * if <equalTo(x,6)> then print(\"yes\") else print(\"no\") done done <equalTo(x,10)>!";
+//		sourceCode = "print(\"YEEET\")!";
+		sourceCode = "x=10! function heh(y) * print(y) done! heh(x)!";
+		sourceCode = "function max(x,y) * if <greaterThan(x,y)> then return x else return y done done! max(5,7)!";
+//		sourceCode = "function max(x,y) return y done! max(5,7)!";
+		sourceCode = "function sum(x,y) * add(x,y) done! sum(5,7)!";
+		sourceCode = "function difference(x,y) * sub(x,y) done! difference(5,7)!";
+		sourceCode = "function gcd(x,y) * if <equalTo(x,0)> then return y else return gcd(mod(y, x), x) done done! gcd(2,4)!";
 		Translator translator = new Translator(sourceCode);
 		translator.translate(globalNamespace);
 	}

@@ -109,10 +109,16 @@ public class Parser {
         // Check if the statement is an assignment or an expression
         if (peek().type == TokenType.VARIABLE && lookAhead(1).type == TokenType.ASSIGN) {
             return parseAssignment();
+        } else if (peek().type == TokenType.FUNCTION) {
+        	return parseFunctionDefinition();
+        } else if (peek().type == TokenType.VARIABLE && lookAhead(1).type == TokenType.LPAREN) {
+        	return parseFunctionCall();
         } else if (peek().type == TokenType.LOOP) {
         	return parseLoop();
         } else if (peek().type == TokenType.IF) {
         	return parseIf();
+        } else if (peek().type == TokenType.RETURN) {
+        	return parseReturn();
         } else {
             return parseExpression();
         }
@@ -158,6 +164,9 @@ public class Parser {
         // Check if the current token is a boolean
         } else if (check(TokenType.BOOLEAN)) {
         	return new ValueStatement(advance().value.equals("true") ? true : false);
+        // Check if the current Totoken is a string
+        } else if (check(TokenType.STRING)) {
+        	return new ValueStatement(advance().value);
         // Check if the current token is a variable
         } else if (check(TokenType.VARIABLE)) {
             return new VariableStatement(advance().value);
@@ -205,6 +214,10 @@ public class Parser {
             	return new ModStatement(statements.get(0), statements.get(1));
             case "equalTo":
             	return new EqualStatement(statements.get(0), statements.get(1));
+            case "greaterThan":
+            	return new GreaterThanStatement(statements.get(0), statements.get(1));
+            case "print":
+            	return new PrintStatement(statements.get(0));
             default:
                 throw new RuntimeException("Unknown operation: " + operation);
         }
@@ -252,7 +265,7 @@ public class Parser {
     	
     	consume(TokenType.LANGLE, "Expected '<' after 'if' keyword.");
     	ExecutableStatement conditional = parseOperation();
-    	if (!(conditional instanceof EqualStatement)) {
+    	if (!(conditional instanceof EqualStatement) && !(conditional instanceof GreaterThanStatement)) {
     		throw new Exception("Expected conditional operation.");
     	}
     	consume(TokenType.RANGLE, "Expected '>' after conditional operation.");
@@ -265,5 +278,64 @@ public class Parser {
     	consume(TokenType.DONE, "Expected 'done' keyword for 'if' closer.");
     	
     	return new IfStatement(conditional, ifTrue, ifFalse);
+    }
+    
+    private ExecutableStatement parseFunctionDefinition() throws Exception {
+    	consume(TokenType.FUNCTION, "Expected 'function' keyword.");
+    	
+    	String funcName = consume(TokenType.VARIABLE, "Expected a function name.").value;
+    	consume(TokenType.LPAREN, "Expected '(' after operation name.");
+    	List<String> parameters = new ArrayList<>();
+        if (!check(TokenType.RPAREN)) {
+            do {
+            	parameters.add(advance().value);
+                // Explicitly check and advance if the next token is a comma
+                if (check(TokenType.COMMA)) {
+                    advance();
+                } else {
+                    break; // Break if no comma is present
+                }
+            } while (true);
+        }
+        consume(TokenType.RPAREN, "Expected ')' after parameters.");
+        
+        List<ExecutableStatement> statements = new ArrayList<>();
+        while (peek().type == TokenType.INBODY) { 
+    		consume(TokenType.INBODY, "Expected '*' to separate statements");
+    		statements.add(parseStatement());
+    	}
+    	
+        consume(TokenType.DONE, "Expected 'done' keyword for 'function' closer.");
+    	return new FuncDeclarationStatement(funcName, parameters, statements);
+    }
+    
+    /**
+     * Parses an operation and returns an executable Java statement.
+     * @return an executable statement
+     */
+    private ExecutableStatement parseFunctionCall() throws Exception {
+        String function = consume(TokenType.VARIABLE, "Expected function name.").value;
+        consume(TokenType.LPAREN, "Expected '(' after operation name.");
+        List<ExecutableStatement> arguments = new ArrayList<>();
+        if (!check(TokenType.RPAREN)) {
+            do {
+            	arguments.add(parseExpression());
+                // Explicitly check and advance if the next token is a comma
+                if (check(TokenType.COMMA)) {
+                    advance();
+                } else {
+                    break; // Break if no comma is present
+                }
+            } while (true);
+        }
+        consume(TokenType.RPAREN, "Expected ')' after arguments in parse function call." + function + lookAhead(1).value);
+
+        return new FuncCallStatement(function, arguments);
+    }
+    
+    private ExecutableStatement parseReturn() throws Exception {
+    	consume(TokenType.RETURN , "Expected 'return' keyword.");
+    	ExecutableStatement retVal = parseStatement();
+    	return new ReturnStatement(retVal);
     }
 }

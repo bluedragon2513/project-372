@@ -1,12 +1,13 @@
 package statements;
 
-import variables.Variable;
 import java.util.Map;
 
-public class ModStatement implements ExecutableStatement {
+import variables.Variable;
+
+public class GreaterThanStatement implements ExecutableStatement {
     private ExecutableStatement operand1, operand2;
 
-    public ModStatement(ExecutableStatement operand1, ExecutableStatement operand2) {
+    public GreaterThanStatement(ExecutableStatement operand1, ExecutableStatement operand2) {
         this.operand1 = operand1;
         this.operand2 = operand2;
     }
@@ -16,8 +17,8 @@ public class ModStatement implements ExecutableStatement {
         Object left = operand1.run(namespace);
         Object right = operand2.run(namespace);
         if (left instanceof Double && right instanceof Double) {
-            return ((Double) left) % ((Double) right);
+            return ((Double) left) > ((Double) right);
         }
-        throw new IllegalArgumentException("Modulo operation is only valid for doubles");
+        throw new IllegalArgumentException("GreaterThan operation is only valid for doubles");
     }
 }
