@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.regex.Pattern;
 
 import statements.ExecutableStatement;
@@ -33,9 +34,26 @@ public class Translator {
 			Translator translator = new Translator(sourceCode);
 			translator.translate(globalNamespace);
 		}
-
+		
+		Scanner sc = new Scanner(System.in);
+		String next = "";
+		Translator t;
+		while (true) {
+			System.out.print(">> ");
+			next = next + sc.nextLine();
+			if (next.equals("exit"))
+				break;
+			try {
+				t = new Translator(next);
+				t.translate(globalNamespace);
+				next = "";
+			} catch (Exception ex) {
+				System.out.println("Idk" + ex);
+			}
+		}
+		
 		String sourceCode = "result = add(mult(2,3), mult(2,3))! test = add(result,1)!"; // Example source code
-//		sourceCode = "x = equalTo(9,9)!";
+		sourceCode = "x = equalTo(9,9)!";
 //		sourceCode = "test = 1! loop <x=5> <add(x,1)> * test = add(test,1) done <equalTo(x,9)>!";
 //		sourceCode = "x=5! if <equalTo(x,5)> then y=true else y=false done! y!";
 //		sourceCode = "loop <x=5> <add(x,1)> * if <equalTo(x,6)> then print(\"yes\") else print(\"no\") done done <equalTo(x,10)>!";
@@ -52,10 +70,11 @@ public class Translator {
 //		sourceCode = "print(\nequalTo(reads(), \"5\"))\n!"; // reads
 //		sourceCode = "readf()";
 		
-		sourceCode = "print(something(readi(), readb()))!";
+//		sourceCode = "print(something(readi(), readb()))!";
+		
 		
 		Translator translator = new Translator(sourceCode);
-		translator.translate(globalNamespace);
+//		translator.translate(globalNamespace);
 	}
 
 	private static String readInput(String fileName) {

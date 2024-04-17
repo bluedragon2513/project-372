@@ -40,12 +40,12 @@ public class Loop implements ExecutableStatement {
     	
     	start.run(localNamespace); // create variable
     	while (!(boolean) end.run(localNamespace)) {
-    		body.run(localNamespace); // run body
-    		lastVal = opt.run(localNamespace); // increment
-//    		System.out.print(localNamespace.get(startVar).getValue() + " " + !(boolean) end.run(localNamespace));
+    		lastVal = body.run(localNamespace); // run body
+    		opt.run(localNamespace); // increment
     		
-//    		i++;
-//    		if (i > 15) break;
+    		if (lastVal instanceof ReturnValue) {
+    			return lastVal;
+    		}
     	}
     	
 //    	opt.run(localNamespace);

@@ -15,9 +15,6 @@ public class ModStatement implements ExecutableStatement {
     public Object run(Map<String, Variable> namespace) throws Exception {
         Object left = operand1.run(namespace);
         Object right = operand2.run(namespace);
-        if (left instanceof Double && right instanceof Double) {
-            return ((Double) left) % ((Double) right);
-        }
-        throw new IllegalArgumentException("Modulo operation is only valid for doubles");
+        return (Integer)left % (Integer)right;
     }
 }

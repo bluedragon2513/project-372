@@ -16,9 +16,10 @@ public class GreaterThanStatement implements ExecutableStatement {
     public Object run(Map<String, Variable> namespace) throws Exception {
         Object left = operand1.run(namespace);
         Object right = operand2.run(namespace);
-        if (left instanceof Double && right instanceof Double) {
-            return ((Double) left) > ((Double) right);
+        if (left instanceof Comparable && right instanceof Comparable) {
+            return ((Comparable) left).compareTo((Comparable) right) > 0;
         }
-        throw new IllegalArgumentException("GreaterThan operation is only valid for doubles");
+        return null;
+//        throw new IllegalArgumentException("GreaterThan operation is only valid for doubles");
     }
 }
