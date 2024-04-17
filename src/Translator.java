@@ -28,44 +28,48 @@ public class Translator {
 
 		Map<String, Variable> globalNamespace = new HashMap<String, Variable>();
 
-		// test = 5
-		// somehow identify the type of 5:
-		Pattern intPattern = Pattern.compile("[0-9]+"); // ???
-
-		// Create a new integer variable and add it to the dictionary
-//		dict.put("test", new IntegerVar("test", 5));
-
-//		System.out.println(dict.get("test").getValue());
-//		System.out.println(dict.get("test").isComparable());
-//		System.out.println(dict.get("test").isArithmetic());
+		if (args.length == 1) {
+			String sourceCode = readInput(args[0]);
+			Translator translator = new Translator(sourceCode);
+			translator.translate(globalNamespace);
+		}
 
 		String sourceCode = "result = add(mult(2,3), mult(2,3))! test = add(result,1)!"; // Example source code
-		sourceCode = "x = equalTo(9,9)!";
-		sourceCode = "test = 1! loop <x=5> <add(x,1)> * test = add(test,1) done <equalTo(x,9)>!";
-		sourceCode = "x=5! if <equalTo(x,5)> then y=true else y=false done! y!";
-		sourceCode = "loop <x=5> <add(x,1)> * if <equalTo(x,6)> then print(\"yes\") else print(\"no\") done done <equalTo(x,10)>!";
-//		sourceCode = "print(\"YEEET\")!";
-		sourceCode = "x=10! function heh(y) * print(y) done! heh(x)!";
-		sourceCode = "function max(x,y) * if <greaterThan(x,y)> then return x else return y done done! max(5,7)!";
-//		sourceCode = "function max(x,y) return y done! max(5,7)!";
-		sourceCode = "function sum(x,y) * add(x,y) done! sum(5,7)!";
-		sourceCode = "function difference(x,y) * sub(x,y) done! difference(5,7)!";
-		sourceCode = "function gcd(x,y) * if <equalTo(x,0)> then return y else return gcd(mod(y, x), x) done done! gcd(2,4)!";
+//		sourceCode = "x = equalTo(9,9)!";
+//		sourceCode = "test = 1! loop <x=5> <add(x,1)> * test = add(test,1) done <equalTo(x,9)>!";
+//		sourceCode = "x=5! if <equalTo(x,5)> then y=true else y=false done! y!";
+//		sourceCode = "loop <x=5> <add(x,1)> * if <equalTo(x,6)> then print(\"yes\") else print(\"no\") done done <equalTo(x,10)>!";
+////		sourceCode = "print(\"YEEET\")!";
+//		sourceCode = "x=10! function heh(y) * print(y) done! heh(x)!";
+//		sourceCode = "function max(x,y) * if <greaterThan(x,y)> then return x else return y done done! max(5,7)!";
+////		sourceCode = "function max(x,y) return y done! max(5,7)!";
+//		sourceCode = "function sum(x,y) * add(x,y) done! sum(5,7)!";
+//		sourceCode = "function difference(x,y) * sub(x,y) done! difference(5,7)!";
+//		sourceCode = "function gcd(x,y) * if <equalTo(x,0)> then return y else return gcd(mod(y, x), x) done done! gcd(2,4)!";
+		
+//		sourceCode = "print(add(5,readi()))!"; // readi
+//		sourceCode = "print(equalTo(false, readb()))!"; // readb
+//		sourceCode = "print(\nequalTo(reads(), \"5\"))\n!"; // reads
+//		sourceCode = "readf()";
+		
+		sourceCode = "print(something(readi(), readb()))!";
+		
 		Translator translator = new Translator(sourceCode);
 		translator.translate(globalNamespace);
 	}
 
-	private static void readInput() {
+	private static String readInput(String fileName) {
 		try {
-			FileReader fr = new FileReader("src/TestInput.txt");
+			FileReader fr = new FileReader("src/" + fileName);
 			BufferedReader br = new BufferedReader(fr);
+			
+			StringBuilder str = new StringBuilder();
 
-			char c;
-			String curr = "";
 			while (br.ready()) {
-				curr = br.readLine();
-//				checkValidExpr(curr);
+				str.append(br.readLine());
 			}
+			
+			return str.toString();
 		}
 
 		catch (FileNotFoundException fe) {
@@ -76,6 +80,7 @@ public class Translator {
 			System.out.println("IOException");
 		}
 
+		return "";
 	}
 
 	public void translate(Map<String, Variable> namespace) {

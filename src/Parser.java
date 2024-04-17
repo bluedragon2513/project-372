@@ -111,8 +111,6 @@ public class Parser {
             return parseAssignment();
         } else if (peek().type == TokenType.FUNCTION) {
         	return parseFunctionDefinition();
-        } else if (peek().type == TokenType.VARIABLE && lookAhead(1).type == TokenType.LPAREN) {
-        	return parseFunctionCall();
         } else if (peek().type == TokenType.LOOP) {
         	return parseLoop();
         } else if (peek().type == TokenType.IF) {
@@ -140,7 +138,7 @@ public class Parser {
      * Parses an expression and returns an executable Java statement.
      * @return an executable statement
      */
-    private ExecutableStatement parseExpression() {
+    private ExecutableStatement parseExpression() throws Exception {
         /*
          * An expression can be a single value, a variable, or a nested operation.
          * If the current token is an operation, we parse the operation.
@@ -148,6 +146,8 @@ public class Parser {
          */
         if (peek().type == TokenType.OPERATION) {
             return parseOperation();
+        } else if (peek().type == TokenType.VARIABLE && lookAhead(1).type == TokenType.LPAREN) {
+        	return parseFunctionCall();
         } else {
             return parseInside();
         }
@@ -157,10 +157,12 @@ public class Parser {
      * Parses the inside of an expression and returns an executable Java statement.
      * @return an executable statement
      */
-    private ExecutableStatement parseInside() {
+    private ExecutableStatement parseInside() throws Exception {
         // Check if the current token is a number
         if (check(TokenType.NUMBER)) {
-            return new ValueStatement(Double.parseDouble(advance().value));
+        	if (peek().value.contains("."))
+        		return new ValueStatement(Double.parseDouble(advance().value));
+        	return new ValueStatement(Integer.parseInt(advance().value));
         // Check if the current token is a boolean
         } else if (check(TokenType.BOOLEAN)) {
         	return new ValueStatement(advance().value.equals("true") ? true : false);
@@ -184,8 +186,9 @@ public class Parser {
      * Parses an operation and returns an executable Java statement.
      * @return an executable statement
      */
-    private ExecutableStatement parseOperation() {
+    private ExecutableStatement parseOperation() throws Exception {
         String operation = consume(TokenType.OPERATION, "Expected operation name.").value;
+        System.out.println("operation");
         consume(TokenType.LPAREN, "Expected '(' after operation name.");
         List<ExecutableStatement> statements = new ArrayList<>();
         if (!check(TokenType.RPAREN)) {
@@ -218,6 +221,12 @@ public class Parser {
             	return new GreaterThanStatement(statements.get(0), statements.get(1));
             case "print":
             	return new PrintStatement(statements.get(0));
+            case "readi":
+            	return new ReadIntegerStatement(statements);
+            case "reads":
+            	return new ReadStringStatement(statements);
+            case "readb":
+            	return new ReadBooleanStatement(statements);
             default:
                 throw new RuntimeException("Unknown operation: " + operation);
         }
@@ -315,6 +324,7 @@ public class Parser {
      */
     private ExecutableStatement parseFunctionCall() throws Exception {
         String function = consume(TokenType.VARIABLE, "Expected function name.").value;
+        System.out.println(function);
         consume(TokenType.LPAREN, "Expected '(' after operation name.");
         List<ExecutableStatement> arguments = new ArrayList<>();
         if (!check(TokenType.RPAREN)) {

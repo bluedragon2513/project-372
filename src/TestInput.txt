@@ -1,3 +1,4 @@
-test = 7
-nope = 4
-test = 3
+function something(x,y)
+* print(x)
+* print(y)
+done!

@@ -11,7 +11,7 @@ public class Tokenizer {
     private String input;
     private int position = 0;
     private char currentChar;
-    private static final Set<String> operations = Set.of("add", "sub", "mult", "div", "mod", "equalTo", "greaterThan", "print");
+    private static final Set<String> operations = Set.of("add", "sub", "mult", "div", "mod", "equalTo", "greaterThan", "print", "readi", "readb", "reads", "readf");
     private static final Set<String> controllers = Set.of("loop", "done", "return", "if", "then", "else", "function"); // TODO
     private static final Set<String> booleans = Set.of("true", "false"); // TODO
 

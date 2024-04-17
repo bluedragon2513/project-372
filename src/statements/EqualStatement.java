@@ -16,9 +16,10 @@ public class EqualStatement implements ExecutableStatement {
     public Boolean run(Map<String, Variable> namespace) throws Exception {
         Object left = operand1.run(namespace);
         Object right = operand2.run(namespace);
-        if (left instanceof Double && right instanceof Double) {
-            return ((double) left) == ((double) right);
-        }
-        throw new IllegalArgumentException("Equal operation is only valid for doubles");
+        return left.equals(right);
+//        if (left instanceof Double && right instanceof Double) {
+//            return ((double) left) == ((double) right);
+//        }
+//        throw new IllegalArgumentException("Equal operation is only valid for doubles");
     }
 }
