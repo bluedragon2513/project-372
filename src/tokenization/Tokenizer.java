@@ -11,7 +11,9 @@ public class Tokenizer {
     private String input;
     private int position = 0;
     private char currentChar;
-    private static final Set<String> operations = Set.of("add", "sub", "mult", "div");
+    private static final Set<String> operations = Set.of("add", "sub", "mult", "div", "mod", "equalTo", "greaterThan", "print", "readi", "readb", "reads", "readf");
+    private static final Set<String> controllers = Set.of("loop", "done", "return", "if", "then", "else", "function"); // TODO
+    private static final Set<String> booleans = Set.of("true", "false"); // TODO
 
     // Constructor
     public Tokenizer(String input) {
@@ -75,9 +77,44 @@ public class Tokenizer {
         String resultString = result.toString();
         if (operations.contains(resultString)) {
             return new Token(TokenType.OPERATION, resultString);
+        } else if (controllers.contains(resultString)) { // control structures TODO
+        	if (resultString.equals("loop")) {
+        		return new Token(TokenType.LOOP, resultString);
+        	} else if (resultString.equals("done")) {
+        		return new Token(TokenType.DONE, resultString);
+        	} else if (resultString.equals("if")) {
+        		return new Token(TokenType.IF, resultString);
+        	} else if (resultString.equals("then")) {
+        		return new Token(TokenType.THEN, resultString);
+        	} else if (resultString.equals("else")) {
+        		return new Token(TokenType.ELSE, resultString);
+        	} else if (resultString.equals("function")) {
+        		return new Token(TokenType.FUNCTION, resultString);
+        	} else if (resultString.equals("return")) {
+        		return new Token(TokenType.RETURN, resultString);
+        	} 
+        } else if (booleans.contains(resultString)) {
+        	return new Token(TokenType.BOOLEAN, resultString);
         } else {
             return new Token(TokenType.VARIABLE, resultString);
         }
+        
+        return null;
+    }
+    
+    /**
+     * Returns a string from the input.
+     * @return a string token
+     */
+    public Token string() {
+    	StringBuilder result = new StringBuilder();
+    	
+    	// Check for valid identifier characters moving through the input one character at a time with 'advance'
+        while (currentChar != '\0' && currentChar != '\"') {
+            result.append(currentChar);
+            advance();
+        }
+    	return new Token(TokenType.STRING, result.toString());
     }
 
     /**
@@ -110,6 +147,19 @@ public class Tokenizer {
             } else if (currentChar == '!') {
                 tokens.add(new Token(TokenType.END, "!"));
                 advance();
+            } else if (currentChar == '<') { // CONTROL STRUCTURES //TODO
+                tokens.add(new Token(TokenType.LANGLE, "<"));
+                advance();
+            } else if (currentChar == '>') {
+                tokens.add(new Token(TokenType.RANGLE, ">"));
+                advance();
+            } else if (currentChar == '*') {
+                tokens.add(new Token(TokenType.INBODY, "*"));
+                advance();
+            } else if (currentChar == '\"') {
+            	advance();
+            	tokens.add(string());
+            	advance();
             } else {
                 throw new RuntimeException("Unexpected character: " + currentChar);
             }

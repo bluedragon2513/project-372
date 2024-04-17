@@ -1,8 +1,10 @@
+import java.util.ArrayList;
+import java.util.List;
+
+import control_structure.*;
 import statements.*;
 import tokenization.Token;
 import tokenization.TokenType;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class is responsible for parsing the tokens into executable statements.
@@ -107,6 +109,14 @@ public class Parser {
         // Check if the statement is an assignment or an expression
         if (peek().type == TokenType.VARIABLE && lookAhead(1).type == TokenType.ASSIGN) {
             return parseAssignment();
+        } else if (peek().type == TokenType.FUNCTION) {
+        	return parseFunctionDefinition();
+        } else if (peek().type == TokenType.LOOP) {
+        	return parseLoop();
+        } else if (peek().type == TokenType.IF) {
+        	return parseIf();
+        } else if (peek().type == TokenType.RETURN) {
+        	return parseReturn();
         } else {
             return parseExpression();
         }
@@ -128,7 +138,7 @@ public class Parser {
      * Parses an expression and returns an executable Java statement.
      * @return an executable statement
      */
-    private ExecutableStatement parseExpression() {
+    private ExecutableStatement parseExpression() throws Exception {
         /*
          * An expression can be a single value, a variable, or a nested operation.
          * If the current token is an operation, we parse the operation.
@@ -136,6 +146,8 @@ public class Parser {
          */
         if (peek().type == TokenType.OPERATION) {
             return parseOperation();
+        } else if (peek().type == TokenType.VARIABLE && lookAhead(1).type == TokenType.LPAREN) {
+        	return parseFunctionCall();
         } else {
             return parseInside();
         }
@@ -145,10 +157,18 @@ public class Parser {
      * Parses the inside of an expression and returns an executable Java statement.
      * @return an executable statement
      */
-    private ExecutableStatement parseInside() {
+    private ExecutableStatement parseInside() throws Exception {
         // Check if the current token is a number
         if (check(TokenType.NUMBER)) {
-            return new ValueStatement(Double.parseDouble(advance().value));
+        	if (peek().value.contains("."))
+        		return new ValueStatement(Double.parseDouble(advance().value));
+        	return new ValueStatement(Integer.parseInt(advance().value));
+        // Check if the current token is a boolean
+        } else if (check(TokenType.BOOLEAN)) {
+        	return new ValueStatement(advance().value.equals("true") ? true : false);
+        // Check if the current Totoken is a string
+        } else if (check(TokenType.STRING)) {
+        	return new ValueStatement(advance().value);
         // Check if the current token is a variable
         } else if (check(TokenType.VARIABLE)) {
             return new VariableStatement(advance().value);
@@ -166,7 +186,7 @@ public class Parser {
      * Parses an operation and returns an executable Java statement.
      * @return an executable statement
      */
-    private ExecutableStatement parseOperation() {
+    private ExecutableStatement parseOperation() throws Exception {
         String operation = consume(TokenType.OPERATION, "Expected operation name.").value;
         consume(TokenType.LPAREN, "Expected '(' after operation name.");
         List<ExecutableStatement> statements = new ArrayList<>();
@@ -192,8 +212,186 @@ public class Parser {
                 return new MulStatement(statements.get(0), statements.get(1));
             case "div":
                 return new DivStatement(statements.get(0), statements.get(1));
+            case "mod":
+            	return new ModStatement(statements.get(0), statements.get(1));
+            case "equalTo":
+            	return new EqualStatement(statements.get(0), statements.get(1));
+            case "greaterThan":
+            	return new GreaterThanStatement(statements.get(0), statements.get(1));
+            case "print":
+            	return new PrintStatement(statements.get(0));
+            case "readi":
+            	return new ReadIntegerStatement(statements);
+            case "reads":
+            	return new ReadStringStatement(statements);
+            case "readb":
+            	return new ReadBooleanStatement(statements);
             default:
                 throw new RuntimeException("Unknown operation: " + operation);
         }
+    }
+    
+    /**
+     * Parses a loop and returns an executable Java statement
+     * 		loop <x=0> <add(x,2)>
+     * 			* result = add(x,1)!
+     * 		done <equalTo(x,6)>!
+     * 
+     * @return an executable statement
+     * @throws Exception
+     */
+    private ExecutableStatement parseLoop() throws Exception {
+    	consume(TokenType.LOOP, "Expected 'loop' keyword");
+    	consume(TokenType.LANGLE, "Expected '<' after 'loop' keyword.");
+    	
+    	List<ExecutableStatement> statements = new ArrayList<>();
+    	String startVar = peek().value;
+    	ExecutableStatement start = parseAssignment();
+    	consume(TokenType.RANGLE, "Expected '>' after loop initializer.");
+    	
+    	consume(TokenType.LANGLE, "Expected '<' after loop initializer.");
+    	ExecutableStatement increment = parseOperation();
+    	if (!(increment instanceof AddStatement) && !(increment instanceof SubStatement)) {
+    		throw new Exception("Expected incremental operation.");
+    	}
+    	consume(TokenType.RANGLE, "Expected '>' after loop incrementer.");
+    	
+    	while (peek().type == TokenType.INBODY && lookAhead(1).type != TokenType.DONE) { 
+    		consume(TokenType.INBODY, "Expected '*' to separate statements");
+    		statements.add(parseStatement());
+    	}
+    	
+    	if (peek().type == TokenType.INBODY && lookAhead(1).type == TokenType.DONE)
+    		consume(TokenType.INBODY, "Expected '*' while in a body");
+    	consume(TokenType.DONE, "Expected 'done' keyword after loop body.");
+    	consume(TokenType.LANGLE, "Expected '<' after done keyword.");
+    	ExecutableStatement end = parseOperation();
+    	consume(TokenType.RANGLE, "Expected '>' after done closer.");
+    	
+    	return new Loop(startVar, start, increment, end, statements);
+    }
+    
+    private ExecutableStatement parseIf() throws Exception {
+    	consume(TokenType.IF, "Expected 'if' keyword.");
+    	
+    	consume(TokenType.LANGLE, "Expected '<' after 'if' keyword.");
+    	ExecutableStatement conditional = parseOperation();
+    	if (!(conditional instanceof EqualStatement) && !(conditional instanceof GreaterThanStatement)) {
+    		throw new Exception("Expected conditional operation.");
+    	}
+    	consume(TokenType.RANGLE, "Expected '>' after conditional operation.");
+    	
+    	consume(TokenType.THEN, "Expected 'then' keyword after conditional operation.");
+    	List<ExecutableStatement> ifTrueBody = new ArrayList<ExecutableStatement>();
+    	ExecutableStatement ifTrue = null;
+    	if (peek().type == TokenType.INBODY) {
+	    	while (peek().type == TokenType.INBODY && lookAhead(1).type != TokenType.ELSE) { 
+	    		consume(TokenType.INBODY, "Expected '*' to separate statements");
+	    		ifTrueBody.add(parseStatement());
+	    	}
+    	} else {
+    		ifTrue = parseStatement();
+    	}
+
+    	if (peek().type == TokenType.INBODY && lookAhead(1).type == TokenType.ELSE)
+    		consume(TokenType.INBODY, "Expected 'inbody' keyword while in body");
+    	
+    	consume(TokenType.ELSE, "Expected 'else' keyword after true statement.");    	
+    	List<ExecutableStatement> ifFalseBody = new ArrayList<ExecutableStatement>();
+    	ExecutableStatement ifFalse = null;
+    	if (peek().type == TokenType.INBODY) {
+	    	while (peek().type == TokenType.INBODY) { 
+	    		consume(TokenType.INBODY, "Expected '*' to separate statements");
+	    		ifFalseBody.add(parseStatement());
+	    	}
+    	} else {
+    		ifFalse = parseStatement();
+    	}
+    	
+    	if (peek().type == TokenType.INBODY && lookAhead(1).type == TokenType.DONE)
+    		consume(TokenType.INBODY, "Expected '*' while in body");
+    	consume(TokenType.DONE, "Expected 'done' keyword for 'if' closer.");
+    	
+    	if (ifTrue == null && ifFalse == null)
+    		return new IfStatement(conditional, new Body(ifTrueBody), new Body(ifFalseBody));
+    	else if (ifTrue == null)
+    		return new IfStatement(conditional, new Body(ifTrueBody), ifFalse);
+    	else if (ifFalse == null)
+    		return new IfStatement(conditional, ifTrue, new Body(ifFalseBody));
+    	
+    	return new IfStatement(conditional, ifTrue, ifFalse);
+    }
+    
+    /**
+     * Parses a function definition
+     * @return
+     * @throws Exception
+     */
+    private ExecutableStatement parseFunctionDefinition() throws Exception {
+    	consume(TokenType.FUNCTION, "Expected 'function' keyword.");
+    	
+    	String funcName = consume(TokenType.VARIABLE, "Expected a function name.").value;
+    	consume(TokenType.LPAREN, "Expected '(' after operation name.");
+    	List<String> parameters = new ArrayList<>();
+        if (!check(TokenType.RPAREN)) {
+            do {
+            	parameters.add(advance().value);
+                // Explicitly check and advance if the next token is a comma
+                if (check(TokenType.COMMA)) {
+                    advance();
+                } else {
+                    break; // Break if no comma is present
+                }
+            } while (true);
+        }
+        consume(TokenType.RPAREN, "Expected ')' after parameters.");
+        
+        List<ExecutableStatement> statements = new ArrayList<>();
+        while (peek().type == TokenType.INBODY) { 
+    		consume(TokenType.INBODY, "Expected '*' to separate statements");
+    		statements.add(parseStatement());
+    	}
+    	
+        if (peek().type == TokenType.INBODY && lookAhead(1).type == TokenType.DONE)
+        	consume(TokenType.INBODY, "Expected '*' while in a body");
+        consume(TokenType.DONE, "Expected 'done' keyword for 'function' closer.");
+    	return new FuncDeclarationStatement(funcName, parameters, statements);
+    }
+    
+    /**
+     * Parses a function and returns an executable Java statement.
+     * @return an executable statement
+     * @throws Exception
+     */
+    private ExecutableStatement parseFunctionCall() throws Exception {
+        String function = consume(TokenType.VARIABLE, "Expected function name.").value;
+        System.out.println(function);
+        consume(TokenType.LPAREN, "Expected '(' after operation name.");
+        List<ExecutableStatement> arguments = new ArrayList<>();
+        if (!check(TokenType.RPAREN)) {
+            do {
+            	arguments.add(parseExpression());
+                // Explicitly check and advance if the next token is a comma
+                if (check(TokenType.COMMA)) {
+                    advance();
+                } else {
+                    break; // Break if no comma is present
+                }
+            } while (true);
+        }
+        consume(TokenType.RPAREN, "Expected ')' after arguments in parse function call." + function + lookAhead(1).value);
+
+        return new FuncCallStatement(function, arguments);
+    }
+    
+    /**
+     * Parses a return statement and returns an executable Java statement
+     * @return an executable return statement
+     * @throws Exception
+     */
+    private ExecutableStatement parseReturn() throws Exception {
+    	consume(TokenType.RETURN , "Expected 'return' keyword.");
+    	ExecutableStatement retVal = parseStatement();
+    	return new ReturnStatement(retVal);
     }
 }

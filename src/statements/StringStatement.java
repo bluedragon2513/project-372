@@ -3,7 +3,7 @@ package statements;
 import variables.Variable;
 import java.util.Map;
 
-public class StringStatement implements ExecutableStatement<String> {
+public class StringStatement implements ExecutableStatement {
     private String value;
 
     public StringStatement(String value) {
