@@ -1,1 +1,7 @@
 x = false
+
+add(5, false)!
+
+if true then print(5) done!
+
+if <true> then print(5)!
