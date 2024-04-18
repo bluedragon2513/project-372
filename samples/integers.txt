@@ -1,0 +1,13 @@
+x = 100 !
+y = 50 !
+
+print(x)!
+print(y)!
+print(add(x,y))!
+print(sub(x,y))!
+print(mult(x,y))!
+print(div(x,y))!
+print(mod(x,y))!
+print(equalTo(x,y))!
+print(equalTo(equalTo(x,y),equalTo(x,y)))!
+print(greaterThan(x,y))!

@@ -1,0 +1,9 @@
+loop <x=0> <add(x,1)>
+* print(x)
+done <equalTo(x,2)>!
+
+loop <x=0> <add(x,1)>
+* loop <y=0> <add(y,1)>
+    * print(add(x,y))
+* done <equalTo(y,2)>
+done <equalTo(x,2)>!

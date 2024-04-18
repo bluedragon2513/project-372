@@ -1,0 +1,16 @@
+x = 10!
+y = 20!
+
+if <greaterThan(x,y)> then print("impossible!") else print("good") done!
+
+z = 10!
+
+if <greaterThan(y,x)> then
+* print("That's normal")
+* z = 100
+else 
+* print("That's not normal")
+* z = -100
+done!
+
+print(z)!

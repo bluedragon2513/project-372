@@ -8,6 +8,14 @@ import statements.AssignmentStatement;
 import statements.ExecutableStatement;
 import variables.Variable;
 
+/**
+ * This class defines a loop.
+ * 	While this class defines a classical for-loop,
+ * 	it is not impossible to implement while-like loops
+ * 
+ * Syntax: loop <var=val> <sub(var,num)> * statement done <equalTo(var,endingValue)>
+ * @author Anthony Nguyen
+ */
 public class Loop implements ExecutableStatement {
 	HashMap<String, Variable> localNamespace;
 	String startVar;

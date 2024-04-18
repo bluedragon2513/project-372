@@ -53,7 +53,7 @@ public class Tokenizer {
      */
     private Token number() {
         StringBuilder result = new StringBuilder();
-        while (currentChar != '\0' && (Character.isDigit(currentChar) || currentChar == '.')) {
+        while (currentChar != '\0' && (Character.isDigit(currentChar) || currentChar == '.' || currentChar == '-')) {
             result.append(currentChar);
             advance();
         }
@@ -128,7 +128,7 @@ public class Tokenizer {
         while (currentChar != '\0') {
             if (Character.isWhitespace(currentChar)) {
                 skipWhitespace();
-            } else if (Character.isDigit(currentChar) || currentChar == '.') {
+            } else if (Character.isDigit(currentChar) || currentChar == '.' || currentChar == '-') {
                 tokens.add(number());
             } else if (Character.isLetter(currentChar) || currentChar == '_') {
                 tokens.add(identifierOrOperation());
