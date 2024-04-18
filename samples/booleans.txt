@@ -4,3 +4,5 @@ y = true!
 print(x)!
 print(y)!
 print(equalTo(x,y))!
+print(greaterThan(4,5))!
+print(lessThan(4,5))!
