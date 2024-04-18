@@ -7,7 +7,7 @@ import tokenization.Token;
 import tokenization.TokenType;
 
 /**
- * This class is responsible for parsing the tokens into executable statements.
+ * This class is responsible for parsing the tokens into ExecutableStatements.
  */
 public class Parser {
     private List<Token> tokens;
@@ -87,7 +87,7 @@ public class Parser {
     }
 
     /**
-     * Parses the program and returns a list of executable Java statements.
+     * Parses the program and returns a list of ExecutableStatements.
      * @return a list of executable statements
      * @throws Exception if an error occurs while parsing the program
      */
@@ -101,7 +101,7 @@ public class Parser {
     }
 
     /**
-     * Parses a single statement and returns an executable Java statement.
+     * Parses a single statement and returns an ExecutableStatement.
      * @return an executable statement
      * @throws Exception if an error occurs while parsing the statement
      */
@@ -123,7 +123,7 @@ public class Parser {
     }
 
     /**
-     * Parses an assignment statement and returns an executable Java statement.
+     * Parses an assignment statement and returns an ExecutableStatement.
      * @return an executable statement
      * @throws Exception if an error occurs while parsing the assignment statement
      */
@@ -135,7 +135,7 @@ public class Parser {
     }
 
     /**
-     * Parses an expression and returns an executable Java statement.
+     * Parses an expression and returns an ExecutableStatement.
      * @return an executable statement
      */
     private ExecutableStatement parseExpression() throws Exception {
@@ -154,7 +154,7 @@ public class Parser {
     }
 
     /**
-     * Parses the inside of an expression and returns an executable Java statement.
+     * Parses the inside of an expression and returns an ExecutableStatement.
      * @return an executable statement
      */
     private ExecutableStatement parseInside() throws Exception {
@@ -166,7 +166,7 @@ public class Parser {
         // Check if the current token is a boolean
         } else if (check(TokenType.BOOLEAN)) {
         	return new ValueStatement(advance().value.equals("true") ? true : false);
-        // Check if the current Totoken is a string
+        // Check if the current Token is a string
         } else if (check(TokenType.STRING)) {
         	return new ValueStatement(advance().value);
         // Check if the current token is a variable
@@ -183,7 +183,7 @@ public class Parser {
     }
 
     /**
-     * Parses an operation and returns an executable Java statement.
+     * Parses an operation and returns an ExecutableStatement.
      * @return an executable statement
      */
     private ExecutableStatement parseOperation() throws Exception {
@@ -218,6 +218,12 @@ public class Parser {
             	return new EqualStatement(statements.get(0), statements.get(1));
             case "greaterThan":
             	return new GreaterThanStatement(statements.get(0), statements.get(1));
+            case "and":
+            	return new AndStatement(statements.get(0), statements.get(1));
+            case "or":
+            	return new OrStatement(statements.get(0), statements.get(1));
+            case "not":
+            	return new NotStatement(statements.get(0));
             case "print":
             	return new PrintStatement(statements.get(0));
             case "readi":
@@ -232,7 +238,7 @@ public class Parser {
     }
     
     /**
-     * Parses a loop and returns an executable Java statement
+     * Parses a loop and returns an ExecutableStatement
      * 		loop <x=0> <add(x,2)>
      * 			* result = add(x,1)!
      * 		done <equalTo(x,6)>!
@@ -276,7 +282,8 @@ public class Parser {
     	
     	consume(TokenType.LANGLE, "Expected '<' after 'if' keyword.");
     	ExecutableStatement conditional = parseOperation();
-    	if (!(conditional instanceof EqualStatement) && !(conditional instanceof GreaterThanStatement)) {
+    	if (!(conditional instanceof EqualStatement) && !(conditional instanceof GreaterThanStatement)
+    	   && !(conditional instanceof AndStatement) && !(conditional instanceof OrStatement) && !(conditional instanceof NotStatement)) {
     		throw new Exception("Expected conditional operation.");
     	}
     	consume(TokenType.RANGLE, "Expected '>' after conditional operation.");
@@ -359,7 +366,7 @@ public class Parser {
     }
     
     /**
-     * Parses a function and returns an executable Java statement.
+     * Parses a function and returns an ExecutableStatement.
      * @return an executable statement
      * @throws Exception
      */
@@ -385,7 +392,7 @@ public class Parser {
     }
     
     /**
-     * Parses a return statement and returns an executable Java statement
+     * Parses a return statement and returns an ExecutableStatement
      * @return an executable return statement
      * @throws Exception
      */
