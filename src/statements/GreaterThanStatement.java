@@ -12,6 +12,7 @@ public class GreaterThanStatement implements ExecutableStatement {
         this.operand2 = operand2;
     }
 
+    @SuppressWarnings("unchecked") // Comparables cast is a requirement
     @Override
     public Object run(Map<String, Variable> namespace) throws Exception {
         Object left = operand1.run(namespace);

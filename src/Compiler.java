@@ -19,10 +19,10 @@ public class Compiler {
         }
 
         String sourceCode = readInput(args[0]);
-        Translator t = new Translator(sourceCode);
+        Translator t = new Translator();
         Map<String, Variable> globalNamespace = new HashMap<String, Variable>();
 
-        t.translate(globalNamespace);
+		t.translate(sourceCode, globalNamespace);
     }
 
     private static String readInput(String fileName) {

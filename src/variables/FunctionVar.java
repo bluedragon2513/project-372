@@ -1,6 +1,5 @@
 package variables;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import control_structure.Body;

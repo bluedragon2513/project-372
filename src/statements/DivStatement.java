@@ -1,6 +1,7 @@
 package statements;
 
 import variables.Variable;
+import control_structure.exceptions.TypeException;
 import java.util.Map;
 
 public class DivStatement implements ExecutableStatement {
@@ -33,6 +34,6 @@ public class DivStatement implements ExecutableStatement {
         }
 
         // Throw an exception if the types are not suitable for division
-        throw new IllegalArgumentException("Division not supported between " + left.getClass().getSimpleName() + " and " + right.getClass().getSimpleName());
+        throw new TypeException("Division not supported between " + left.getClass().getSimpleName() + " and " + right.getClass().getSimpleName());
     }
 }

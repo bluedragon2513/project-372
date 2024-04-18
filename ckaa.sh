@@ -8,7 +8,6 @@ fi
 
 javac -d ./bin -sourcepath ./src src/control_structure/*.java src/statements/*.java src/tokenization/*.java src/variables/*.java src/*.java
 
-
 if [ $# -eq 1 ]; then
     java -cp ./bin Translator $1
     exit 0

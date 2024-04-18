@@ -15,12 +15,13 @@ public class ReadBooleanStatement implements ExecutableStatement {
 		assert(arguments.size() < 2);
 	}
 	
+	@SuppressWarnings("resource") // for System.in resource!
 	@Override
 	public Object run(Map<String, Variable> namespace) throws Exception {
 		if (out != null)
 			System.out.print(out.run(namespace));
 		
-		Scanner sc = new Scanner(System.in);
+		Scanner sc = new Scanner(System.in); // do not close Scanner!
 		boolean x = sc.nextBoolean();
 		
 		return x;
