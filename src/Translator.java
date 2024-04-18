@@ -79,7 +79,8 @@ public class Translator {
 
 	private static String readInput(String fileName) {
 		try {
-			FileReader fr = new FileReader("src/" + fileName);
+//			FileReader fr = new FileReader(fileName); // via command-line
+			FileReader fr = new FileReader("src/" + fileName); // via Eclipse
 			BufferedReader br = new BufferedReader(fr);
 			
 			StringBuilder str = new StringBuilder();
@@ -92,7 +93,7 @@ public class Translator {
 		}
 
 		catch (FileNotFoundException fe) {
-			System.out.println("Input file not found");
+			System.out.println("Input file not found: ");
 		}
 
 		catch (IOException ioe) {

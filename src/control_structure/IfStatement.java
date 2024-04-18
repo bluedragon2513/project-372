@@ -6,6 +6,16 @@ import java.util.Map;
 import statements.ExecutableStatement;
 import variables.Variable;
 
+/**
+ * This class defines a normal If Statement
+ * 	- It is possible to chain if statements together to create
+ * 	else-if chains
+ * 	- It is possible to omit INBODY (*) characters for single
+ * 	line statements
+ * 
+ * Syntax: if <bool> then * statement else * statement done
+ * @author Anthony Nguyen
+ */
 public class IfStatement implements ExecutableStatement {
 	HashMap<String, Variable> localNamespace;
 	ExecutableStatement conditional;

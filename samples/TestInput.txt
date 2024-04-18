@@ -1,0 +1,24 @@
+function hilo()
+* number = 420
+* loop <i=0> <add(i,1)>
+  * input = readi()
+  * if <equalTo(input, number)> then
+    * print("You win!")
+    * return 0
+  * else if <greaterThan(input, number)> then print("Too high") else print("Too low") done
+  * done
+* done <equalTo(i, 10)>
+done !
+
+function gcd(x, y)
+* if <greaterThan(x,y)> then dividend = x else dividend = y done
+* if <greaterThan(x,y)> then divisor = y else divisor = x done
+* loop <i=0> <add(i,0)>
+	* remainder = mod(dividend, divisor)
+	* dividend = divisor
+	* divisor = remainder
+* done <equalTo(divisor,0)>
+* return dividend 
+done!
+
+print(gcd(readi(), readi()))!

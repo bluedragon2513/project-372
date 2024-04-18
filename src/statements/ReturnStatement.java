@@ -5,6 +5,12 @@ import java.util.Map;
 import control_structure.ReturnValue;
 import variables.Variable;
 
+/**
+ * This class defines a return statement and returns a ReturnValue
+ * 
+ * Syntax: return <retVal>
+ * @author Anthony Nguyen
+ */
 public class ReturnStatement implements ExecutableStatement {
 	ExecutableStatement returnValue;
 	

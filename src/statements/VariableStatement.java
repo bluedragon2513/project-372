@@ -1,6 +1,7 @@
 package statements;
 
 import variables.Variable;
+import variables.FunctionVar;
 import java.util.Map;
 
 public class VariableStatement implements ExecutableStatement {
@@ -16,6 +17,8 @@ public class VariableStatement implements ExecutableStatement {
         if (variable == null) {
             throw new RuntimeException("Variable '" + variableName + "' not defined");
         }
+        if (variable instanceof FunctionVar) // this gives us functional programming
+            return variable;
         return variable.getValue();
     }
 }

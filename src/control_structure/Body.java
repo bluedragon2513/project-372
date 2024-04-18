@@ -7,14 +7,29 @@ import java.util.Map;
 import statements.ExecutableStatement;
 import variables.Variable;
 
+/**
+ * This class defines the Body control structure
+ * 	Essentially, it acts as a container of ExecutableStatements,
+ * 	yet is also an ExecutableStatement itself
+ * 		This is technically the composite pattern
+ * 
+ * @author Anthony Nguyen
+ */
 public class Body implements ExecutableStatement {
 	List<ExecutableStatement> statements;
 	boolean localNamespace = false;
 	
+	/**
+	 * This constructor defines the normal Body, but the namespace is always local
+	 */
 	public Body(List<ExecutableStatement> statements) {
 		this.statements = statements;
 	}
 	
+	/**
+	 * This constructor can define whether the namespace is local or of the parent's
+	 * This is especially useful in functions vs. loop Bodies
+	 */
 	public Body(List<ExecutableStatement> statements, boolean localNamespace) {
 		this.statements = statements;
 		this.localNamespace = localNamespace;

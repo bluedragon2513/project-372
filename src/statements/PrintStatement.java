@@ -4,6 +4,12 @@ import java.util.Map;
 
 import variables.Variable;
 
+/**
+ * This class defines a print statement
+ * 	* it allows all 3 types to be printed
+ * 
+ * @author Anthony Nguyen
+ */
 public class PrintStatement implements ExecutableStatement {
 	ExecutableStatement string;
 	
