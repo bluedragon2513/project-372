@@ -1,6 +1,7 @@
 package statements;
 
 import variables.Variable;
+import control_structure.exceptions.TypeException;
 import java.util.Map;
 
 public class AddStatement implements ExecutableStatement {
@@ -26,6 +27,6 @@ public class AddStatement implements ExecutableStatement {
             // Otherwise evaluate as two ints
             return ((Number) left).intValue() + ((Number) right).intValue();
         }
-        throw new IllegalArgumentException("Invalid types for addition");
+        throw new TypeException("Invalid types for addition");
     }
 }

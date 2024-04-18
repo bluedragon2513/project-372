@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import control_structure.*;
+import control_structure.exceptions.ParseException;
 import statements.*;
 import tokenization.Token;
 import tokenization.TokenType;
@@ -68,12 +69,13 @@ public class Parser {
      * @param type the expected token type
      * @param errorMessage the error message to display if the current token does not match the expected type
      * @return Token the consumed token
+     * @exception ParseException the current token does not match the expected type
      */
-    private Token consume(TokenType type, String errorMessage) {
+    private Token consume(TokenType type, String errorMessage) throws Exception {
         if (check(type)) {
             return advance();
         }
-        throw new RuntimeException(errorMessage + " Found: " + peek().type);
+        throw new ParseException(errorMessage + " Found: " + peek().type);
     }
 
     /**
@@ -88,7 +90,7 @@ public class Parser {
 
     /**
      * Parses the program and returns a list of ExecutableStatements.
-     * @return a list of executable statements
+     * @return a List of ExecutableStatement
      * @throws Exception if an error occurs while parsing the program
      */
     public List<ExecutableStatement> parseProgram() throws Exception {
@@ -102,7 +104,7 @@ public class Parser {
 
     /**
      * Parses a single statement and returns an ExecutableStatement.
-     * @return an executable statement
+     * @return ExecutableStatement
      * @throws Exception if an error occurs while parsing the statement
      */
     private ExecutableStatement parseStatement() throws Exception {
@@ -124,7 +126,7 @@ public class Parser {
 
     /**
      * Parses an assignment statement and returns an ExecutableStatement.
-     * @return an executable statement
+     * @return ExecutableStatement
      * @throws Exception if an error occurs while parsing the assignment statement
      */
     public ExecutableStatement parseAssignment() throws Exception {
@@ -136,7 +138,7 @@ public class Parser {
 
     /**
      * Parses an expression and returns an ExecutableStatement.
-     * @return an executable statement
+     * @returnExecutableStatement
      */
     private ExecutableStatement parseExpression() throws Exception {
         /*
@@ -155,7 +157,7 @@ public class Parser {
 
     /**
      * Parses the inside of an expression and returns an ExecutableStatement.
-     * @return an executable statement
+     * @return ExecutableStatement
      */
     private ExecutableStatement parseInside() throws Exception {
         // Check if the current token is a number
@@ -184,7 +186,7 @@ public class Parser {
 
     /**
      * Parses an operation and returns an ExecutableStatement.
-     * @return an executable statement
+     * @return ExecutableStatement
      */
     private ExecutableStatement parseOperation() throws Exception {
         String operation = consume(TokenType.OPERATION, "Expected operation name.").value;
@@ -218,6 +220,8 @@ public class Parser {
             	return new EqualStatement(statements.get(0), statements.get(1));
             case "greaterThan":
             	return new GreaterThanStatement(statements.get(0), statements.get(1));
+            case "lessThan":
+                return new LessThanStatement(statements.get(0), statements.get(1));
             case "and":
             	return new AndStatement(statements.get(0), statements.get(1));
             case "or":
@@ -277,6 +281,17 @@ public class Parser {
     	return new Loop(startVar, start, increment, end, statements);
     }
     
+    /**
+     * Parses an if and returns an ExecutableStatement
+     * 		if <equalTo(1,1)> then
+     * 			* print("YES!")
+     *      else
+     *          * print("NO!")
+     *      done
+     * 
+     * @return an executable statement
+     * @throws Exception
+     */
     private ExecutableStatement parseIf() throws Exception {
     	consume(TokenType.IF, "Expected 'if' keyword.");
     	
@@ -331,6 +346,10 @@ public class Parser {
     
     /**
      * Parses a function definition
+     *      function name(params)
+     *          * param1 = 5
+     *      done
+     * 
      * @return
      * @throws Exception
      */
@@ -367,7 +386,9 @@ public class Parser {
     
     /**
      * Parses a function and returns an ExecutableStatement.
-     * @return an executable statement
+     *      funcName(arguments)
+     * 
+     * @return ExecutableStatement
      * @throws Exception
      */
     private ExecutableStatement parseFunctionCall() throws Exception {
@@ -392,8 +413,10 @@ public class Parser {
     }
     
     /**
-     * Parses a return statement and returns an ExecutableStatement
-     * @return an executable return statement
+     * Parses a return statement and returns an ExecutableStatement (ReturnStatement)
+     *      return value
+     * 
+     * @return a ReturnStatement
      * @throws Exception
      */
     private ExecutableStatement parseReturn() throws Exception {

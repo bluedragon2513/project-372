@@ -1,5 +1,7 @@
 package tokenization;
 
+import control_structure.exceptions.TokenException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -11,10 +13,10 @@ public class Tokenizer {
     private String input;
     private int position = 0;
     private char currentChar;
-    private static final Set<String> operations = Set.of("add", "sub", "mult", "div", "mod", "equalTo", "greaterThan", "print", "readi", "readb", "reads", "readf",
+    private static final Set<String> operations = Set.of("add", "sub", "mult", "div", "mod", "equalTo", "greaterThan", "lessThan", "print", "readi", "readb", "reads", "readf",
     													 "and", "not", "or");
-    private static final Set<String> controllers = Set.of("loop", "done", "return", "if", "then", "else", "function"); // TODO
-    private static final Set<String> booleans = Set.of("true", "false"); // TODO
+    private static final Set<String> controllers = Set.of("loop", "done", "return", "if", "then", "else", "function"); 
+    private static final Set<String> booleans = Set.of("true", "false"); 
 
     // Constructor
     public Tokenizer(String input) {
@@ -78,7 +80,7 @@ public class Tokenizer {
         String resultString = result.toString();
         if (operations.contains(resultString)) {
             return new Token(TokenType.OPERATION, resultString);
-        } else if (controllers.contains(resultString)) { // control structures TODO
+        } else if (controllers.contains(resultString)) {
         	if (resultString.equals("loop")) {
         		return new Token(TokenType.LOOP, resultString);
         	} else if (resultString.equals("done")) {
@@ -123,8 +125,9 @@ public class Tokenizer {
      *
      * NOTE: We can add more token types and rules here to support different operations
      * @return a list of tokens
+     * @exception TokenException unexpected token
      */
-    public List<Token> tokenize() {
+    public List<Token> tokenize() throws Exception {
         List<Token> tokens = new ArrayList<>();
         while (currentChar != '\0') {
             if (Character.isWhitespace(currentChar)) {
@@ -148,7 +151,7 @@ public class Tokenizer {
             } else if (currentChar == '!') {
                 tokens.add(new Token(TokenType.END, "!"));
                 advance();
-            } else if (currentChar == '<') { // CONTROL STRUCTURES //TODO
+            } else if (currentChar == '<') {
                 tokens.add(new Token(TokenType.LANGLE, "<"));
                 advance();
             } else if (currentChar == '>') {
@@ -162,7 +165,7 @@ public class Tokenizer {
             	tokens.add(string());
             	advance();
             } else {
-                throw new RuntimeException("Unexpected character: " + currentChar);
+                throw new TokenException("Unexpected character: " + currentChar);
             }
         }
 

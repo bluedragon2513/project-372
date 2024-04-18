@@ -1,6 +1,7 @@
 package statements;
 
 import java.util.Map;
+import control_structure.exceptions.TypeException;
 import variables.Variable;
 
 public class AndStatement implements ExecutableStatement {
@@ -17,7 +18,7 @@ public class AndStatement implements ExecutableStatement {
         Object rightResult = operand2.run(namespace);
 
         if (!(leftResult instanceof Boolean) || !(rightResult instanceof Boolean)) {
-            throw new IllegalArgumentException("AND operands must be Boolean");
+            throw new TypeException("AND operands must be Boolean");
         }
 
         Boolean left = (Boolean) leftResult;
