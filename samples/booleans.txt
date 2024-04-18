@@ -6,3 +6,7 @@ print(y)!
 print(equalTo(x,y))!
 print(greaterThan(4,5))!
 print(lessThan(4,5))!
+print(not(x))!
+print(not(y))!
+print(and(x,y))!
+print(or(x,y))!
