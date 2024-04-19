@@ -1,4 +1,4 @@
-# Usage: ckaac.sh <input_file>
+# Usage: anna.sh <input_file>
 
 if [ $# -ne 1 ]; then
     echo "Usage: $0 <input_file>"
