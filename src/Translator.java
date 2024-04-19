@@ -1,7 +1,9 @@
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,11 +20,22 @@ public class Translator {
 
 	public Translator() {}
 
+	/**
+	 * Tries to either:
+	 * 	1) Execute a compiled program.
+	 * 	2) Read in a file and then interpret user input.
+	 * 	3) Interpret user input.
+	 * 
+	 * @param args The first element may contain an input file
+	 */
 	public static void main(String[] args) {
 		Map<String, Variable> globalNamespace = new HashMap<String, Variable>();
 		Translator translator = new Translator();
 
-		if (args.length == 1) {
+		if (args.length == 1 && args[0].substring(args[0].lastIndexOf('.')).equals(".oop")) {
+			execute(args[0], globalNamespace);
+			return;
+		} else if (args.length == 1 ) {
 			String sourceCode = readInput(args[0]);
 			translator = new Translator();
 			translator.translate(sourceCode, globalNamespace);
@@ -31,7 +44,14 @@ public class Translator {
 		translator.interpreter(globalNamespace);
 	}
 
-	private static String readInput(String fileName) {
+	/**
+	 * Reads in a file from the user and 
+	 * returns the String representation of it.
+	 * 
+	 * @param fileName
+	 * @return the String representation of the file
+	 */
+	public static String readInput(String fileName) {
 		FileReader fr; // get file from src/ or ./
 		try {
 			fr = new FileReader("src/" + fileName);
@@ -54,6 +74,7 @@ public class Translator {
 				str.append('\n');
 			}
 			
+			br.close();
 			return str.toString();
 		}
 		catch (IOException ioe) {
@@ -63,6 +84,11 @@ public class Translator {
 		return "";
 	}
 
+	/**
+	 * Interprets programs from the user via the command line, in a namespace.
+	 * 
+	 * @param globalNamespace
+	 */
 	@SuppressWarnings("resource") // for System.in resource
 	public void interpreter(Map<String, Variable> globalNamespace) {
 		Scanner sc = new Scanner(System.in); // do not close this Scanner!
@@ -82,6 +108,12 @@ public class Translator {
 		}
 	}
 
+	/**
+	 * Translates the source code in the namespace, and executes it.
+	 * 
+	 * @param sourceCode
+	 * @param namespace
+	 */
 	public void translate(String sourceCode, Map<String, Variable> namespace) {
 		this.tokenizer = new Tokenizer(sourceCode);
 
@@ -106,7 +138,6 @@ public class Translator {
 			System.out.println(); // Separate parsing and execution output
 
 			// Execute parsed statements and print results
-//			Map<String, Variable> namespace = new HashMap<>();
 			System.out.println("Execution Outputs:");
 			for (ExecutableStatement statement : program) {
 				Object result = statement.run(namespace);
@@ -116,6 +147,39 @@ public class Translator {
 		} catch (Exception e) {
 			System.err.println("Error during translation: " + e.getMessage());
 			e.printStackTrace(); // Provide more detailed error information
+			System.out.println();
+		}
+	}
+	
+	/**
+	 * Executes a compiled program in the namespace. 
+	 * 
+	 * @param programFile
+	 * @param namespace
+	 */
+	@SuppressWarnings("unchecked")
+	public static void execute(String programFile, Map<String, Variable> namespace) {
+		List<ExecutableStatement> program; // get the program from the programFile
+		try {
+			FileInputStream inStream = new FileInputStream(programFile);
+			ObjectInputStream inFile = new ObjectInputStream(inStream);
+
+			// write to the object and close it
+			program = (List<ExecutableStatement>) inFile.readObject();
+			inFile.close();
+		} catch (Exception ex) {
+			System.out.println("Failed to retrieve compiled program.");
+			return;
+		}
+		
+		// execute the program
+		try {
+			for (ExecutableStatement statement : program) {
+				statement.run(namespace);
+			}
+		} catch (Exception ex) {
+			System.err.println("Error during execution: " + ex.getMessage());
+			ex.printStackTrace(); // Provide more detailed error information
 			System.out.println();
 		}
 	}

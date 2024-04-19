@@ -28,9 +28,9 @@ done!
 
 
 
-print(max)!
-print(add(x,y))!
-print(sub(max,min))!
-print(mult(x,y))!
-print(gcd(x,y))!
-print(lcm(x,y))!
+printn(max)!
+printn(add(x,y))!
+printn(sub(max,min))!
+printn(mult(x,y))!
+printn(gcd(x,y))!
+printn(lcm(x,y))!
