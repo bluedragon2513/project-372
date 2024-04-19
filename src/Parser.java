@@ -395,7 +395,6 @@ public class Parser {
      */
     private ExecutableStatement parseFunctionCall() throws Exception {
         String function = consume(TokenType.VARIABLE, "Expected function name.").value;
-        System.out.println(function);
         consume(TokenType.LPAREN, "Expected '(' after operation name.");
         List<ExecutableStatement> arguments = new ArrayList<>();
         if (!check(TokenType.RPAREN)) {
