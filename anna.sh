@@ -1,5 +1,5 @@
-# Usage: ckaa.sh <input_file>
-# Usage: ckaa.sh
+# Usage: anna.sh <input_file>
+# Usage: anna.sh
 
 if [ $# -gt 1 ]; then
     echo "Usage: $0 <input_file> OR $0"
