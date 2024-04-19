@@ -13,8 +13,9 @@ public class Tokenizer {
     private String input;
     private int position = 0;
     private char currentChar;
-    private static final Set<String> operations = Set.of("add", "sub", "mult", "div", "mod", "equalTo", "greaterThan", "lessThan", "print", "readi", "readb", "reads", "readf",
-    													 "and", "not", "or");
+    private static final Set<String> operations = Set.of("add", "sub", "mult", "div", "mod", "equalTo", "greaterThan", "lessThan", // arithmetic
+                                                        "print", "printn", "readi", "readb", "reads", "readf", // IO
+    													 "and", "not", "or"); // boolean
     private static final Set<String> controllers = Set.of("loop", "done", "return", "if", "then", "else", "function"); 
     private static final Set<String> booleans = Set.of("true", "false"); 
 
@@ -46,6 +47,15 @@ public class Tokenizer {
      */
     private void skipWhitespace() {
         while (currentChar != '\0' && Character.isWhitespace(currentChar)) {
+            advance();
+        }
+    }
+
+    /**
+     * Skip comment in the input string (ends with newline)
+     */
+    private void skipComment() {
+        while (currentChar != '\n' && currentChar != '\0') {
             advance();
         }
     }
@@ -136,6 +146,8 @@ public class Tokenizer {
                 tokens.add(number());
             } else if (Character.isLetter(currentChar) || currentChar == '_') {
                 tokens.add(identifierOrOperation());
+            } else if (currentChar == '%') {
+                skipComment();
             } else if (currentChar == '=') {
                 tokens.add(new Token(TokenType.ASSIGN, "="));
                 advance();

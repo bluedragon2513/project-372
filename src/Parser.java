@@ -230,6 +230,8 @@ public class Parser {
             	return new NotStatement(statements.get(0));
             case "print":
             	return new PrintStatement(statements.get(0));
+            case "printn":
+                return new PrintnStatement(statements.get(0));
             case "readi":
             	return new ReadIntegerStatement(statements);
             case "reads":
