@@ -24,3 +24,4 @@ Steps to Run (Compiled):
     - The compiled code will be stored in the same directory as file.
         Only the file extension will be changed to .oop
     - The input file must have an extension.
+3. After the file has compiled, run `anna.sh <file.oop>`.
