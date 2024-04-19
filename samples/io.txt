@@ -1,0 +1,3 @@
+print(readi())!
+print(readb())!
+print(reads())!

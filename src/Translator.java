@@ -51,6 +51,7 @@ public class Translator {
 
 			while (br.ready()) {
 				str.append(br.readLine());
+				str.append('\n');
 			}
 			
 			return str.toString();
