@@ -13,8 +13,8 @@ public class ModStatement implements ExecutableStatement {
 
     @Override
     public Object run(Map<String, Variable> namespace) throws Exception {
-        Object right = operand1.run(namespace);
-        Object left = operand2.run(namespace);
+        Object left = operand1.run(namespace);
+        Object right = operand2.run(namespace);
         return (Integer)left % (Integer)right;
     }
 }
