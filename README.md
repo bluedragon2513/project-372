@@ -16,15 +16,15 @@ Description: Anna-OOP
 
 Steps to Run (Interpreted):
 1. Open bash in the project-372 folder.
-2. Run `anna.sh`.
-    - You may have to `chmod u+x anna.sh`.
-    - If you would like to load source code, simply run it as so: `anna.sh <file>`.
+2. Run [`anna.sh`](https://github.com/bluedragon2513/project-372/blob/main/anna.sh).
+    - You may have to <code>chmod u+x <a href="https://github.com/bluedragon2513/project-372/blob/main/anna.sh">anna.sh</a></code>.
+    - If you would like to load source code, simply run it as so: <code><a href="https://github.com/bluedragon2513/project-372/blob/main/anna.sh">anna.sh</a> \<file\></code>.
     - You may also choose to not load any source code.
 
 Steps to Run (Compiled):
 1. Open bash in the project-372 folder.
 2. Run <code><a href="https://github.com/bluedragon2513/project-372/blob/main/annac.sh">annac.sh</a><file></code>.
-    - You may have to `chmod u+x annac.sh`
+    - You may have to <code>chmod u+x <a href="https://github.com/bluedragon2513/project-372/blob/main/annac.sh">annac.sh</a></code>
     - The compiled code will be stored in the same directory as file.
         Only the file extension will be changed to .oop
     - The input file must have an extension.
