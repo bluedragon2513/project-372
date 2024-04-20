@@ -1,0 +1,27 @@
+% based off of PA5 in CSC372
+
+function smallest_positive_with(factors_up_to)
+*   loop <i=factors_up_to> <add(i,1)>
+    *   if <divisible_up_to(factors_up_to, i)> then
+        *   printn(i)
+        *   return i
+    *   else print("")
+    *   done
+*   done <equalTo(i,100000000)>
+done!
+
+function divisible_up_to(max, num)
+*   loop <i=2> <add(i,1)>
+    *   if <not(has_factor(num, i))> then
+        *   return false
+    *   else print("")
+    *   done
+*   done <equalTo(i,max)>
+*   return true
+done!
+
+function has_factor(num, factor)
+*   return equalTo(mod(num, factor), 0)
+done!
+
+smallest_positive_with(15)!
