@@ -1,13 +1,15 @@
+% a basic program showing Hi-Lo
+
 function hilo()
 * number = 420
 * loop <i=0> <add(i,1)>
   * input = readi()
   * if <equalTo(input, number)> then
-    * print("You win!")
+    * printn("You win!")
     * return 0
   * else if <greaterThan(input, number)> then 
-    * print("Too high") else 
-    * print("Too low") done
+    * printn("Too high") else 
+    * printn("Too low") done
   * done
 * done <equalTo(i, 10)>
 done !

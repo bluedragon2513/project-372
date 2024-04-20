@@ -1,9 +1,23 @@
 loop <x=0> <add(x,1)>
-* print(x)
+* printn(x)
 done <equalTo(x,2)>!
 
 loop <x=0> <add(x,1)>
 * loop <y=0> <add(y,1)>
-    * print(add(x,y))
+    * printn(add(x,y))
 * done <equalTo(y,2)>
 done <equalTo(x,2)>!
+
+% Expectation:
+%   0
+%   1
+%   2
+%   0
+%   1
+%   2
+%   1
+%   2
+%   3
+%   2
+%   3
+%   4

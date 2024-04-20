@@ -1,6 +1,12 @@
 x = "Hello World!"!
 
-print(x)!
-print(equalTo(x, x))!
-print(equalTo(x, "Hello World!"))!
-print(equalTo("Hey", "hey"))!
+printn(x)!
+printn(equalTo(x, x))!
+printn(equalTo(x, "Hello World!"))!
+printn(equalTo("Hey", "hey"))!
+
+% Expectation:
+%   Hello World!
+%   true
+%   true
+%   false

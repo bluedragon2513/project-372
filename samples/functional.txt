@@ -1,3 +1,5 @@
+% tests out functional programming by passing functions around
+
 function sum(x,y,z)
 * return add(x,add(y,z))
 done!
@@ -7,7 +9,7 @@ function diff(x,y,z)
 done!
 
 function functional(func, x, y, z)
-* print(func(x,y,z))
+* printn(func(x,y,z))
 done!
 
 x = 10!
@@ -16,3 +18,7 @@ z = 1!
 
 functional(sum, x, y, z)!
 functional(diff, x, y, z)!
+
+% Expectation: 
+%   14
+%    8

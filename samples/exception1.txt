@@ -1,7 +1,10 @@
+% the exception here is on the first line,
+% the statement is not correctly ended by '!'
+
 x = false
 
 add(5, false)!
 
-if true then print(5) done!
+if true then printn(5) done!
 
-if <true> then print(5)!
+if <true> then printn(5)!

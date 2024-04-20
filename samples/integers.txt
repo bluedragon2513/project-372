@@ -1,13 +1,25 @@
 x = 100 !
 y = 50 !
 
-print(x)!
-print(y)!
-print(add(x,y))!
-print(sub(x,y))!
-print(mult(x,y))!
-print(div(x,y))!
-print(mod(x,y))!
-print(equalTo(x,y))!
-print(equalTo(equalTo(x,y),equalTo(x,y)))!
-print(greaterThan(x,y))!
+printn(x)!
+printn(y)!
+printn(add(x,y))!
+printn(sub(x,y))!
+printn(mult(x,y))!
+printn(div(x,y))!
+printn(mod(x,y))!
+printn(equalTo(x,y))!
+printn(equalTo(equalTo(x,y),equalTo(x,y)))!
+printn(greaterThan(x,y))!
+
+% Expectation:
+%   100
+%   50
+%   150
+%   50
+%   5000
+%   2
+%   0
+%   false
+%   true
+%   true

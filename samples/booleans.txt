@@ -1,12 +1,23 @@
 x = false!
 y = true!
 
-print(x)!
-print(y)!
-print(equalTo(x,y))!
-print(greaterThan(4,5))!
-print(lessThan(4,5))!
-print(not(x))!
-print(not(y))!
-print(and(x,y))!
-print(or(x,y))!
+printn(x)!
+printn(y)!
+printn(equalTo(x,y))!
+printn(greaterThan(4,5))!
+printn(lessThan(4,5))!
+printn(not(x))!
+printn(not(y))!
+printn(and(x,y))!
+printn(or(x,y))!
+
+% Expectation:
+%   false
+%   true
+%   false
+%   false
+%   true
+%   true
+%   false
+%   false
+%   true

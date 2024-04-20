@@ -1,16 +1,21 @@
 x = 10!
 y = 20!
 
-if <greaterThan(x,y)> then print("impossible!") else print("good") done!
+if <greaterThan(x,y)> then printn("impossible!") else printn("good") done!
 
 z = 10!
 
 if <greaterThan(y,x)> then
-* print("That's normal")
+* printn("That's normal")
 * z = 100
 else 
-* print("That's not normal")
+* printn("That's not normal")
 * z = -100
 done!
 
-print(z)!
+printn(z)!
+
+% Expectation:
+%   good
+%   That's normal
+%   100
