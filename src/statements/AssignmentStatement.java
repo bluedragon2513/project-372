@@ -21,7 +21,7 @@ public class AssignmentStatement implements ExecutableStatement {
         // Check if the variable already exists in the namespace, or create a new one if it doesn't.
         // If the variable exists but is of a different type, replace it
         Variable variable = namespace.get(variableName);
-        if (variable == null || variable.getClass() != value.getClass()) {
+        if (variable == null || variable.getValue().getClass() != value.getClass()) {
             variable = new Variable(variableName, value);
             namespace.put(variableName, variable);
         } else { // variable.getClass() == value.getClass()
