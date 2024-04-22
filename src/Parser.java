@@ -298,11 +298,12 @@ public class Parser {
     	consume(TokenType.IF, "Expected 'if' keyword.");
     	
     	consume(TokenType.LANGLE, "Expected '<' after 'if' keyword.");
-    	ExecutableStatement conditional = parseOperation();
-    	if (!(conditional instanceof EqualStatement) && !(conditional instanceof GreaterThanStatement)
-    	   && !(conditional instanceof AndStatement) && !(conditional instanceof OrStatement) && !(conditional instanceof NotStatement)) {
-    		throw new Exception("Expected conditional operation.");
-    	}
+	ExecutableStatement conditional = parseExpression();
+    	// ExecutableStatement conditional = parseOperation();
+    	// if (!(conditional instanceof EqualStatement) && !(conditional instanceof GreaterThanStatement)
+    	//    && !(conditional instanceof AndStatement) && !(conditional instanceof OrStatement) && !(conditional instanceof NotStatement)) {
+    	// 	throw new Exception("Expected conditional operation.");
+    	// }
     	consume(TokenType.RANGLE, "Expected '>' after conditional operation.");
     	
     	consume(TokenType.THEN, "Expected 'then' keyword after conditional operation.");
