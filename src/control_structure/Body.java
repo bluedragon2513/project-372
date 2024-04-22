@@ -38,8 +38,20 @@ public class Body implements ExecutableStatement {
 	@Override
 	public Object run(Map<String, Variable> parentNamespace) throws Exception {
 		Map<String, Variable> localNamespace = parentNamespace;
-		if (this.localNamespace)
+		if (this.localNamespace) {
 			localNamespace = new HashMap<String, Variable>(parentNamespace);
+			for (Map.Entry<String, Variable> entry : localNamespace.entrySet()) {
+				String k = entry.getKey();
+				Variable v = entry.getValue();
+				Object value = v.getValue();
+				if (value instanceof String || 
+					value instanceof Integer || 
+					value instanceof Boolean || 
+					value instanceof Double) {
+					localNamespace.put(k, new Variable(k, value));
+				}
+			}
+		}
 
 		Object last = null;
 		
