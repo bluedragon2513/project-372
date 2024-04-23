@@ -141,7 +141,7 @@ public class Translator {
 			System.out.println("Execution Outputs:");
 			for (ExecutableStatement statement : program) {
 				Object result = statement.run(namespace);
-				System.out.println(result); // Print the result of each statement execution
+				// System.out.println(result); // Print the result of each statement execution
 			}
 
 		} catch (Exception e) {

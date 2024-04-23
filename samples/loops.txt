@@ -1,12 +1,12 @@
 loop <x=0> <add(x,1)>
 * printn(x)
-done <equalTo(x,2)>!
+done <equalTo(x,3)>!
 
 loop <x=0> <add(x,1)>
 * loop <y=0> <add(y,1)>
     * printn(add(x,y))
-* done <equalTo(y,2)>
-done <equalTo(x,2)>!
+* done <equalTo(y,3)>
+done <equalTo(x,3)>!
 
 % Expectation:
 %   0
