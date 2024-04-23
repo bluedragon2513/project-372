@@ -27,11 +27,11 @@ public class AddStatement implements ExecutableStatement {
             // Otherwise evaluate as two ints
             return ((Number) left).intValue() + ((Number) right).intValue();
         }
-        else if (left instanceof String && right instanceof String)
+        else // Treat the objects as strings and concatenate them
         {
-        	return (String)left + (String)right;
+        	return left.toString() + right.toString();
         }
         
-        throw new TypeException("Invalid types for addition");
+//        throw new TypeException("Invalid types for addition");
     }
 }
