@@ -1,0 +1,19 @@
+% Read in variables
+a = readi()!
+b = readi()!
+m = readi()!
+
+% Start of loop
+loop <i=a> <add(i,1)>
+* loop <j=0> <add(j,1)> * print("*") done <equalTo(j,i)>
+* printn("") done <equalTo(i,add(b,1))>!
+
+% Multiples Sum
+sum = 0!
+loop <x=1> <add(x,1)>
+* if <equalTo(mod(x,a),0)> then sum = add(sum,x)
+* else if <equalTo(mod(x,b),0)> then sum = add(sum,x)
+  * else print("") done done
+* done <equalTo(x,m)>!
+
+printn(sum)!

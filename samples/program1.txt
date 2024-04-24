@@ -1,0 +1,37 @@
+% Written by group 7
+
+function gcd(x, y)
+* if <greaterThan(x,y)> then dividend = x else dividend = y done
+* if <greaterThan(x,y)> then divisor = y else divisor = x done
+* loop <i=0> <add(i,0)>
+	* remainder = mod(dividend, divisor)
+	* dividend = divisor
+	* divisor = remainder
+* done <equalTo(divisor,0)>
+* return dividend 
+done!
+
+function lcm(x, y)
+* gcd = gcd(x,y)
+* a = mult(x,div(y, gcd))
+* return a 
+done!
+
+x = readi()!
+y = readi()!
+
+if <greaterThan(x,y)> then 
+* max = x 
+* min = y 
+else 
+* max = y 
+* min = x
+done!
+
+
+printn(max)!
+printn(add(x,y))!
+printn(sub(max,min))!
+printn(mult(x,y))!
+printn(gcd(x,y))!
+printn(lcm(x,y))!
