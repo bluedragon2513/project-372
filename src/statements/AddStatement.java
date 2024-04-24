@@ -1,7 +1,6 @@
 package statements;
 
 import variables.Variable;
-import control_structure.exceptions.TypeException;
 import java.util.Map;
 
 public class AddStatement implements ExecutableStatement {
